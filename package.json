@@ -1,0 +1,99 @@
+{
+  "name": "easy-cut",
+  "version": "1.0.0",
+  "description": "EasyCut - 双网切换工具",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "start:EasyCut": "electron .",
+    "build": "electron-builder",
+    "build:win": "electron-builder --win --x64",
+    "build:portable": "electron-builder --win --x64 --dir",
+    "build:installer": "electron-builder --win --x64 --target=nsis",
+    "build:all": "electron-builder --win --x64",
+    "clean": "rimraf dist build",
+    "prebuild": "npm run clean",
+    "create-icon": "node create-default-icon.js"
+  },
+  "keywords": [
+    "network",
+    "switcher",
+    "electron",
+    "windows"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "iconv-lite": "^0.6.3"
+  },
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.9.1",
+    "rimraf": "^5.0.0"
+  },
+  "build": {
+    "appId": "com.easycut.app",
+    "productName": "EasyCut",
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "requestedExecutionLevel": "requireAdministrator",
+      "icon": "icon.ico",
+      "signAndEditExecutable": false,
+      "sign": null,
+      "verifyUpdateCodeSignature": false,
+      "artifactName": "EasyCut-${version}.${ext}",
+      "executableName": "EasyCut",
+      "publisherName": "EasyCut",
+      "legalTrademarks": "EasyCut",
+      "fileAssociations": [
+        {
+          "ext": "easycut",
+          "name": "EasyCut Network Configuration",
+          "description": "EasyCut Network Configuration File"
+        }
+      ],
+      "extraFiles": [
+        {
+          "from": "version-info.json",
+          "to": "version-info.json"
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "differentialPackage": false,
+      "runAfterFinish": false,
+      "perMachine": true,
+      "deleteAppDataOnUninstall": false,
+      "installerIcon": "icon.ico",
+      "uninstallerIcon": "icon.ico"
+    },
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "**/*",
+      "!node_modules/*/{CHANGELOG.md,README.md,README,readme.md,readme}",
+      "!node_modules/*/{test,__tests__,tests,powered-test,example,examples}",
+      "!node_modules/*.d.ts",
+      "!node_modules/.bin",
+      "!**/*.{iml,o,hprof,orig,pyc,pyo,rbc,swp,csproj,sln,xproj}",
+      "!.editorconfig",
+      "!**/._*",
+      "!**/{.DS_Store,.git,.hg,.svn,CVS,RCS,SCCS,.gitignore,.gitattributes}",
+      "!**/{__pycache__,thumbs.db,.flowconfig,.idea,.vs,.nyc_output}",
+      "!**/{appveyor.yml,.travis.yml,circle.yml}",
+      "!**/{npm-debug.log,yarn.lock,.yarn-integrity,.yarn-metadata.json}"
+    ]
+  }
+}

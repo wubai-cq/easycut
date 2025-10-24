@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>简单测试</title>
+    <style>
+        body { margin: 0; padding: 0; background: #0E1122; color: white; }
+        .activation-screen { 
+            position: fixed; 
+            top: 0; left: 0; 
+            width: 100%; height: 100%; 
+            background: #0E1122; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            z-index: 1000; 
+        }
+        .main-app { 
+            position: fixed; 
+            top: 0; left: 0; 
+            width: 100%; height: 100%; 
+            background: #0E1122; 
+            display: none; 
+            align-items: center; 
+            justify-content: center; 
+        }
+        .test-card {
+            background: #1a1d2e;
+            border: 1px solid #2a2d3e;
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- 激活界面 -->
+    <div id="activation-screen" class="activation-screen">
+        <div class="test-card">
+            <h1>激活界面</h1>
+            <p>如果你看到这个界面，说明激活界面可以正常显示</p>
+            <button onclick="showMain()">模拟激活</button>
+        </div>
+    </div>
+
+    <!-- 主应用界面 -->
+    <div id="main-app" class="main-app">
+        <div class="test-card">
+            <h1>主应用界面</h1>
+            <p>激活成功！</p>
+            <button onclick="showActivation()">返回激活界面</button>
+        </div>
+    </div>
+
+    <script>
+        function showMain() {
+            document.getElementById('activation-screen').style.display = 'none';
+            document.getElementById('main-app').style.display = 'flex';
+            console.log('显示主应用');
+        }
+        
+        function showActivation() {
+            document.getElementById('main-app').style.display = 'none';
+            document.getElementById('activation-screen').style.display = 'flex';
+            console.log('显示激活界面');
+        }
+        
+        // 页面加载完成后显示激活界面
+        window.addEventListener('DOMContentLoaded', () => {
+            console.log('页面加载完成');
+            showActivation();
+        });
+    </script>
+</body>
+</html>

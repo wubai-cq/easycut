@@ -1,0 +1,31 @@
+<svg width="256" height="256" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#2d2d2d;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1a1a1a;stop-opacity:1" />
+    </radialGradient>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="256" height="256" fill="url(#bg)" rx="32"/>
+  
+  <!-- 原子核 -->
+  <circle cx="128" cy="128" r="20" fill="#ffffff" stroke="#cccccc" stroke-width="2"/>
+  
+  <!-- 轨道1 -->
+  <ellipse cx="128" cy="128" rx="60" ry="30" fill="none" stroke="#ffffff" stroke-width="3" opacity="0.8"/>
+  <circle cx="188" cy="128" r="8" fill="#ffffff" stroke="#cccccc" stroke-width="1"/>
+  
+  <!-- 轨道2 -->
+  <ellipse cx="128" cy="128" rx="45" ry="45" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.6"/>
+  <circle cx="173" cy="83" r="6" fill="#ffffff" stroke="#cccccc" stroke-width="1"/>
+  
+  <!-- 轨道3 -->
+  <ellipse cx="128" cy="128" rx="30" ry="60" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.7"/>
+  <circle cx="128" cy="68" r="6" fill="#ffffff" stroke="#cccccc" stroke-width="1"/>
+  
+  <!-- 连接线 -->
+  <line x1="128" y1="128" x2="188" y2="128" stroke="#ffffff" stroke-width="1" opacity="0.3"/>
+  <line x1="128" y1="128" x2="173" y2="83" stroke="#ffffff" stroke-width="1" opacity="0.3"/>
+  <line x1="128" y1="128" x2="128" y2="68" stroke="#ffffff" stroke-width="1" opacity="0.3"/>
+</svg>

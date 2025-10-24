@@ -1,0 +1,601 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Microsoft YaHei', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #0E1122;
+    color: #333;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 100%;
+    height: 100vh;
+    background: #0E1122;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* 标题栏已移除 */
+
+/* 警告框 */
+.warning-box {
+    background: #fff3cd;
+    border: 1px solid #ffc107;
+    color: #856404;
+    padding: 10px;
+    margin: 15px 20px 0;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 14px;
+}
+
+/* 快速切换区域 */
+.quick-switch-section {
+    padding: 20px;
+    background: #0E1122;
+}
+
+.quick-switch-section h2 {
+    font-size: 14px;
+    margin-bottom: 15px;
+    color: #ffffff;
+}
+
+.button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.action-button {
+    flex: 1;
+    padding: 20px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    font-family: 'Microsoft YaHei', sans-serif;
+}
+
+.action-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.action-button:active {
+    transform: translateY(0);
+}
+
+.action-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.action-button:disabled:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+/* 活跃指示器 - 绿色横标 */
+.action-button.active-indicator {
+    position: relative;
+    overflow: hidden;
+}
+
+.action-button.active-indicator::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #00ff00, #00cc00, #00ff00);
+    background-size: 200% 100%;
+    animation: indicator-glow 2s ease-in-out infinite;
+    z-index: 1;
+}
+
+.action-button.active-indicator::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: rgba(0, 255, 0, 0.3);
+    box-shadow: 0 0 8px rgba(0, 255, 0, 0.6);
+    z-index: 2;
+}
+
+@keyframes indicator-glow {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.stop-button {
+    background: #1D2A55;
+    color: white;
+}
+
+.start-button {
+    background: linear-gradient(135deg, #141414 0%, #2a2a2a 100%);
+    color: white;
+}
+
+.smart-button {
+    background: linear-gradient(135deg, #141414 0%, #2a2a2a 100%);
+    color: white;
+}
+
+.both-button {
+    background: linear-gradient(135deg, #141414 0%, #2a2a2a 100%);
+    color: white;
+}
+
+.button-icon {
+    display: none;
+}
+
+.button-text {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.button-desc {
+    font-size: 12px;
+    opacity: 0.9;
+}
+
+/* 分隔线 */
+.divider {
+    height: 1px;
+    background: #2a2d3e;
+    margin: 0 20px;
+}
+
+/* 网络接口管理区域 */
+.interface-section {
+    padding: 20px;
+    flex: 1;
+    overflow-y: auto;
+    background: #0E1122;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.section-header h2 {
+    font-size: 14px;
+    color: #ffffff;
+}
+
+.refresh-button {
+    background: #2a3f5f;
+    color: #e0e6ed;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 6px 12px;
+    border-radius: 15px;
+    cursor: pointer;
+    font-size: 11px;
+    transition: all 0.3s ease;
+    pointer-events: auto !important;
+    opacity: 1 !important;
+    font-weight: 500;
+}
+
+.refresh-button:hover {
+    background: #4a5f7f;
+    color: #ffffff;
+    transform: scale(1.05);
+}
+
+.refresh-button:active {
+    transform: scale(0.95);
+}
+
+.refresh-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: #1a2a3a;
+    color: #6c757d;
+}
+
+.refresh-button:disabled:hover {
+    transform: none;
+    background: #1a2a3a;
+    color: #6c757d;
+}
+
+
+.interface-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.loading {
+    text-align: center;
+    color: #8a8d9e;
+    padding: 20px;
+}
+
+.interface-item {
+    background: #1a1d2e;
+    border: 1px solid #2a2d3e;
+    border-radius: 8px;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.interface-item:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.interface-info {
+    flex: 1;
+}
+
+.interface-name {
+    font-size: 14px;
+    font-weight: bold;
+    color: #ffffff;
+    margin-bottom: 5px;
+}
+
+.interface-status {
+    font-size: 12px;
+    display: flex;
+    gap: 10px;
+}
+
+.status-badge {
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+}
+
+.status-enabled {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-disabled {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.status-connected {
+    background: #d1ecf1;
+    color: #0c5460;
+}
+
+.status-disconnected {
+    background: #e2e3e5;
+    color: #383d41;
+}
+
+.interface-controls {
+    display: flex;
+    gap: 8px;
+}
+
+.control-button {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.3s ease;
+    font-family: 'Microsoft YaHei', sans-serif;
+}
+
+.enable-button {
+    background: #28a745;
+    color: white;
+}
+
+.enable-button:hover {
+    background: #218838;
+}
+
+.disable-button {
+    background: #dc3545;
+    color: white;
+}
+
+.disable-button:hover {
+    background: #c82333;
+}
+
+.control-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* 状态栏 */
+.status-bar {
+    background: #0E1122;
+    border-top: 1px solid #2a2d3e;
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #8a8d9e;
+}
+
+#status-text {
+    display: inline-block;
+}
+
+/* 滚动条样式 */
+.interface-section::-webkit-scrollbar {
+    width: 8px;
+}
+
+.interface-section::-webkit-scrollbar-track {
+    background: #0E1122;
+}
+
+.interface-section::-webkit-scrollbar-thumb {
+    background: #0E1122;
+    border-radius: 4px;
+}
+
+.interface-section::-webkit-scrollbar-thumb:hover {
+    background: #0E1122;
+}
+
+/* 信号强度图标样式 */
+.signal-strength {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 20px;
+    margin: 5px 0;
+}
+
+.signal-bar {
+    width: 3px;
+    background: #28a745;
+    border-radius: 1px;
+    transition: all 0.3s ease;
+}
+
+.signal-bar-1 {
+    height: 6px;
+}
+
+.signal-bar-2 {
+    height: 10px;
+}
+
+.signal-bar-3 {
+    height: 14px;
+}
+
+/* 断开连接时的信号强度图标 */
+.signal-disconnected .signal-bar {
+    background: #dc3545;
+    opacity: 0.5;
+}
+
+/* 连接时的信号强度图标动画 */
+.signal-strength:not(.signal-disconnected) .signal-bar-1 {
+    animation: signal-pulse 1.5s ease-in-out infinite;
+}
+
+.signal-strength:not(.signal-disconnected) .signal-bar-2 {
+    animation: signal-pulse 1.5s ease-in-out infinite 0.2s;
+}
+
+.signal-strength:not(.signal-disconnected) .signal-bar-3 {
+    animation: signal-pulse 1.5s ease-in-out infinite 0.4s;
+}
+
+@keyframes signal-pulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scaleY(1);
+    }
+    50% {
+        opacity: 0.6;
+        transform: scaleY(0.8);
+    }
+}
+
+/* 激活界面样式 */
+.activation-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #0E1122;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.activation-container {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+}
+
+.activation-card {
+    background: #1a1d2e;
+    border: 1px solid #2a2d3e;
+    border-radius: 12px;
+    padding: 40px;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.activation-header {
+    margin-bottom: 30px;
+}
+
+.activation-logo {
+    margin-bottom: 20px;
+}
+
+.logo-icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #4a90e2, #357abd);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+    margin: 0 auto;
+}
+
+.activation-title {
+    font-size: 28px;
+    font-weight: bold;
+    color: #ffffff;
+    margin-bottom: 8px;
+}
+
+.activation-subtitle {
+    font-size: 14px;
+    color: #8a8d9e;
+    margin-bottom: 0;
+}
+
+.activation-form {
+    margin-top: 30px;
+}
+
+.input-group {
+    margin-bottom: 25px;
+}
+
+.input-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: #0E1122;
+    border: 2px solid #4a90e2;
+    border-radius: 8px;
+    padding: 0 15px;
+    transition: all 0.3s ease;
+}
+
+.input-container:focus-within {
+    border-color: #4a90e2;
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+}
+
+.input-icon {
+    font-size: 16px;
+    margin-right: 10px;
+    color: #8a8d9e;
+}
+
+.activation-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #ffffff;
+    font-size: 16px;
+    padding: 15px 0;
+    font-family: 'Microsoft YaHei', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.activation-input::placeholder {
+    color: #8a8d9e;
+}
+
+.activation-input.formatted {
+    letter-spacing: 1px;
+}
+
+.activate-button {
+    width: 100%;
+    background: linear-gradient(135deg, #4a90e2, #357abd);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 15px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Microsoft YaHei', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.activate-button:hover {
+    background: linear-gradient(135deg, #357abd, #2c5aa0);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+}
+
+.activate-button:active {
+    transform: translateY(0);
+}
+
+.activate-button:disabled {
+    background: #555;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.activation-message {
+    margin-top: 15px;
+    padding: 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    text-align: center;
+}
+
+.activation-message.success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.activation-message.error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.activation-message.warning {
+    background: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeaa7;
+}
+

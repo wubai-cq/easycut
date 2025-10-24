@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EasyCut 激活界面测试</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- 激活界面 -->
+    <div id="activation-screen" class="activation-screen">
+        <div class="activation-container">
+            <div class="activation-card">
+                <div class="activation-header">
+                    <div class="activation-logo">
+                        <div class="logo-icon">E</div>
+                    </div>
+                    <h1 class="activation-title">EasyCut</h1>
+                    <p class="activation-subtitle">专业的网络管理工具</p>
+                </div>
+                
+                <div class="activation-form">
+                    <div class="input-group">
+                        <div class="input-container">
+                            <div class="input-icon">🔑</div>
+                            <input 
+                                type="text" 
+                                id="activation-code-input" 
+                                class="activation-input" 
+                                placeholder="请输入激活码 (格式: XXXX-XXXX-XXXX-XXXX)"
+                                maxlength="19"
+                            >
+                        </div>
+                        <label for="activation-code-input" class="input-label">请输入激活码</label>
+                    </div>
+                    
+                    <button id="activate-button" class="activate-button">
+                        激活许可证
+                    </button>
+                    
+                    <div id="activation-message" class="activation-message" style="display: none;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主应用界面 -->
+    <div id="main-app" class="container" style="display: none;">
+        <h1>主应用界面</h1>
+        <p>如果你看到这个界面，说明激活界面没有正确显示。</p>
+    </div>
+
+    <script>
+        // 测试激活界面显示
+        function testActivationUI() {
+            console.log('测试激活界面显示...');
+            
+            const activationScreen = document.getElementById('activation-screen');
+            const mainApp = document.getElementById('main-app');
+            
+            console.log('激活界面元素:', activationScreen);
+            console.log('主应用元素:', mainApp);
+            
+            if (activationScreen) {
+                console.log('激活界面显示状态:', activationScreen.style.display);
+                console.log('激活界面计算样式:', window.getComputedStyle(activationScreen).display);
+            }
+            
+            if (mainApp) {
+                console.log('主应用显示状态:', mainApp.style.display);
+                console.log('主应用计算样式:', window.getComputedStyle(mainApp).display);
+            }
+        }
+        
+        // 页面加载完成后测试
+        window.addEventListener('DOMContentLoaded', () => {
+            console.log('页面加载完成，开始测试...');
+            testActivationUI();
+        });
+    </script>
+</body>
+</html>
