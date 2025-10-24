@@ -1,8 +1,17 @@
 {
-  "name": "easy-cut",
+  "name": "EasyCut",
   "version": "1.0.0",
-  "description": "EasyCut - 双网切换工具",
+  "description": "EasyCut - 双网保持",
   "main": "main.js",
+  "icon": "icon.ico",
+  "productName": "EasyCut",
+  "fileDescription": "EasyCut - 双网保持",
+  "legalCopyright": "Copyright (C) 2024 EasyCut",
+  "originalFilename": "EasyCut.exe",
+  "productVersion": "1.0.0",
+  "fileVersion": "1.0.0",
+  "internalName": "EasyCut",
+  "legalTrademarks": "EasyCut",
   "scripts": {
     "start": "electron .",
     "start:EasyCut": "electron .",
@@ -21,7 +30,7 @@
     "electron",
     "windows"
   ],
-  "author": "Your Name",
+  "author": "wubai",
   "license": "MIT",
   "dependencies": {
     "iconv-lite": "^0.6.3"
@@ -29,6 +38,7 @@
   "devDependencies": {
     "electron": "^28.0.0",
     "electron-builder": "^24.9.1",
+    "rcedit": "^4.0.1",
     "rimraf": "^5.0.0"
   },
   "build": {
@@ -52,31 +62,47 @@
       "executableName": "EasyCut",
       "publisherName": "EasyCut",
       "legalTrademarks": "EasyCut",
-      "fileAssociations": [
+      "extraResources": [
         {
-          "ext": "easycut",
-          "name": "EasyCut Network Configuration",
-          "description": "EasyCut Network Configuration File"
+          "from": "icon.ico",
+          "to": "icon.ico"
         }
       ],
       "extraFiles": [
         {
           "from": "version-info.json",
           "to": "version-info.json"
+        },
+        {
+          "from": "node_modules/rcedit/bin/rcedit.exe",
+          "to": "node_modules/rcedit/bin/rcedit.exe"
+        },
+        {
+          "from": "icon.ico",
+          "to": "icon.ico"
+        }
+      ],
+      "fileAssociations": [
+        {
+          "ext": "easycut",
+          "name": "EasyCut Network Configuration",
+          "description": "EasyCut Network Configuration File"
         }
       ]
     },
     "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true,
-      "createDesktopShortcut": true,
-      "createStartMenuShortcut": true,
-      "differentialPackage": false,
+        "oneClick": false,
+        "allowToChangeInstallationDirectory": true,
+        "createDesktopShortcut": false,
+        "createStartMenuShortcut": true,
+        "differentialPackage": false,
       "runAfterFinish": false,
       "perMachine": true,
       "deleteAppDataOnUninstall": false,
       "installerIcon": "icon.ico",
-      "uninstallerIcon": "icon.ico"
+      "uninstallerIcon": "icon.ico",
+      "shortcutName": "EasyCut",
+      "include": "installer.nsh"
     },
     "directories": {
       "output": "dist"

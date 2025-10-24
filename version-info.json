@@ -1,11 +1,14 @@
 {
   "CompanyName": "EasyCut",
   "ProductName": "EasyCut",
-  "FileDescription": "EasyCut",
-  "LegalCopyright": "Copyright (C) 2024 EasyCut",
+  "FileDescription": "EasyCut - 双网切换工具",
+  "LegalCopyright": "Copyright (C) 2024 EasyCut. All rights reserved.",
   "OriginalFilename": "EasyCut.exe",
   "ProductVersion": "1.0.0",
   "FileVersion": "1.0.0",
   "InternalName": "EasyCut",
-  "LegalTrademarks": "EasyCut"
+  "LegalTrademarks": "EasyCut",
+  "Comments": "专业的网络管理工具",
+  "PrivateBuild": "",
+  "SpecialBuild": ""
 }

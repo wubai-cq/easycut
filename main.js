@@ -8,7 +8,7 @@ const ActivationManager = require('./activation');
 // 设置进程名称和应用元数据
 process.title = 'EasyCut';
 
-// 设置应用元数据以影响任务管理器显示
+// 强制设置进程名称（Windows）
 if (process.platform === 'win32') {
   // 设置应用用户模型ID
   app.setAppUserModelId('com.easycut.app');
@@ -18,6 +18,25 @@ if (process.platform === 'win32') {
   
   // 设置应用版本信息
   app.setVersion('1.0.0');
+  
+  // 设置应用程序描述
+  app.setAboutPanelOptions({
+    applicationName: 'EasyCut',
+    applicationVersion: '1.0.0',
+    copyright: 'Copyright (C) 2024 EasyCut',
+    credits: 'EasyCut - 双网切换工具'
+  });
+  
+  // 强制设置进程标题
+  try {
+    process.title = 'EasyCut';
+    // 尝试设置进程名称
+    if (process.setTitle) {
+      process.setTitle('EasyCut');
+    }
+  } catch (error) {
+    console.log('设置进程标题失败:', error);
+  }
 }
 
 const execPromise = util.promisify(exec);
