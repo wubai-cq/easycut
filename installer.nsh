@@ -13,10 +13,19 @@
     
     DetailPrint "应用程序元数据修复完成"
     
-    ; 创建桌面快捷方式（直接覆盖，避免闪烁）
+    ; 创建桌面快捷方式（使用 NSIS 内置方法）
     DetailPrint "创建桌面快捷方式..."
     SetShellVarContext current
+    
+    ; 删除可能存在的旧快捷方式
+    Delete "$DESKTOP\EasyCut.lnk"
+    
+    ; 使用 NSIS 内置方法创建快捷方式
     CreateShortCut "$DESKTOP\EasyCut.lnk" "$INSTDIR\EasyCut.exe" "" "$INSTDIR\EasyCut.exe" 0 SW_SHOWNORMAL "" "EasyCut - 双网保持"
+    
+    ; 强制刷新桌面图标缓存
+    DetailPrint "刷新桌面图标缓存..."
+    System::Call 'shell32.dll::SHChangeNotify(i 0x8000000, i 0, i 0, i 0)'
     
     ; 清理可能存在的旧Electron快捷方式（静默删除）
     Delete "$DESKTOP\Electron.lnk"
