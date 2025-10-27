@@ -800,7 +800,7 @@ async function ensureBothInterfacesEnabled() {
 // 执行网络切换（原批处理文件的功能）
 async function switchToWaiwang() {
   try {
-    console.log('=== 启动外网，保持内网连接但使用 APIPA 地址');
+    console.log('=== 启动外网，保持内网连接但使用 xxxx地址');
     
     // 动态检测网口
     const interfaces = await getNetworkInterfaces();
@@ -827,21 +827,19 @@ async function switchToWaiwang() {
     await enableInterface(neiwang.name);
     console.log('内网接口已启用（保持连接）');
     
-    // 2. 设置内网为 APIPA 地址（169.254.x.x），使其无法正常使用
+    // 2. 设置内网为 xxxx地址（169.254.x.x），使其无法正常使用
     try {
-      console.log('设置内网为 APIPA 地址...');
+      console.log('设置内网为 xxxx地址...');
       
-      // 方法1：先禁用 DHCP，再设置静态 APIPA 地址
+      // 方法1：先禁用 DHCP，再设置静态 xxxx地址
       await execNetsh(['interface', 'ipv4', 'set', 'interface', neiwang.name, 'dhcp=disabled']);
       console.log('已禁用内网 DHCP');
       
       await new Promise(resolve => setTimeout(resolve, 500));
       
       await execNetsh(['interface', 'ipv4', 'set', 'address', neiwang.name, 'static', '169.254.1.1', '255.255.0.0']);
-      console.log('内网已设置为 APIPA 地址（169.254.1.1）');
       
     } catch (apipaError) {
-      console.log('设置 APIPA 地址失败，尝试备用方法...', apipaError.message);
       
       // 备用方法：使用 PowerShell 设置
       try {
@@ -852,10 +850,10 @@ async function switchToWaiwang() {
             # 禁用 DHCP
             Set-NetIPInterface -InterfaceAlias '${neiwang.name}' -Dhcp Disabled -ErrorAction SilentlyContinue
             
-            # 设置静态 APIPA 地址
+            # 设置静态 xxxx地址
             New-NetIPAddress -InterfaceAlias '${neiwang.name}' -IPAddress '169.254.1.1' -PrefixLength 16 -ErrorAction SilentlyContinue
             
-            Write-Output "内网已设置为 APIPA 地址"
+            Write-Output "内网已设置为 xxxx地址"
           } else {
             Write-Output "未找到内网适配器"
           }
@@ -873,10 +871,8 @@ async function switchToWaiwang() {
           child.stdout.on('data', (data) => { output += data.toString(); });
           child.on('close', (code) => {
             if (code === 0) {
-              console.log('PowerShell 设置 APIPA 成功');
               resolve();
             } else {
-              console.log('PowerShell 设置失败，继续...');
               resolve(); // 不阻止主流程
             }
           });
@@ -892,22 +888,18 @@ async function switchToWaiwang() {
     
     // 3. 启用外网 WiFi
     await enableInterface(waiwang.name);
-    console.log('外网 WiFi 已启用');
     
     // 等待 WiFi 连接建立
     await new Promise(resolve => setTimeout(resolve, 2000));
     
     // 恢复 WiFi 的正常 DHCP 设置（简化版本，避免断开连接）
     try {
-      console.log('开始恢复 WiFi 连接...');
       
       // 1. 直接设置 DHCP 模式（不禁用接口）
       await execNetsh(['interface', 'ipv4', 'set', 'interface', waiwang.name, 'dhcp=enabled']);
-      console.log('已启用 DHCP 客户端');
       
       // 2. 释放当前 IP 地址
       await execNetsh(['interface', 'ipv4', 'set', 'address', waiwang.name, 'dhcp']);
-      console.log('已重置为 DHCP 模式');
       
       // 3. 重置 DNS 为自动获取
       await execNetsh(['interface', 'ipv4', 'set', 'dns', waiwang.name, 'dhcp']);
@@ -1004,10 +996,10 @@ async function switchToNeiwang() {
   }
 }
 
-// 同时启用内外网（内网正常连接，外网使用 APIPA 地址）
+// 同时启用内外网（内网正常连接，外网使用 xxxx地址）
 async function enableBothNetworks() {
   try {
-    console.log('=== 同时启用内外网（内网正常连接，外网使用 APIPA 地址）');
+    console.log('=== 同时启用内外网（内网正常连接，外网使用xxxx地址）');
     
     // 动态检测网口
     const interfaces = await getNetworkInterfaces();
@@ -1038,19 +1030,15 @@ async function enableBothNetworks() {
     try {
       console.log('恢复内网为正常 DHCP 连接...');
       
-      // 1. 直接设置 DHCP 模式（不禁用接口）
-      await execNetsh(['interface', 'ipv4', 'set', 'interface', neiwang.name, 'dhcp=enabled']);
-      console.log('已启用内网 DHCP 客户端');
-      
-      // 2. 释放当前 IP 地址
+      // 1. 设置内网为 DHCP 模式
       await execNetsh(['interface', 'ipv4', 'set', 'address', neiwang.name, 'dhcp']);
       console.log('已重置内网为 DHCP 模式');
       
-      // 3. 重置 DNS 为自动获取
+      // 2. 重置 DNS 为自动获取
       await execNetsh(['interface', 'ipv4', 'set', 'dns', neiwang.name, 'dhcp']);
       console.log('已重置内网 DNS 为自动获取');
       
-      // 4. 等待内网网络稳定
+      // 3. 等待内网网络稳定
       await new Promise(resolve => setTimeout(resolve, 2000));
       
     } catch (neiwangError) {
@@ -1063,20 +1051,20 @@ async function enableBothNetworks() {
     // 3. 启用外网 WiFi
     await enableInterface(waiwang.name);
     console.log('外网 WiFi 已启用');
-    
+     
     // 等待 WiFi 连接建立
     await new Promise(resolve => setTimeout(resolve, 2000));
     
-    // 4. 设置外网 WiFi 为 APIPA 地址（不禁用 DHCP，直接添加静态地址）
+    // 4. 设置外网 WiFi 为静态 xxxx地址
     try {
-      console.log('设置外网 WiFi 为 APIPA 地址（保持 DHCP 连接）...');
+      console.log('设置外网 WiFi 为静态 xxxx地址...');
       
-      // 方法1：直接添加静态 APIPA 地址，不禁用 DHCP
-      await execNetsh(['interface', 'ipv4', 'add', 'address', waiwang.name, '169.254.2.1', '255.255.0.0']);
-      console.log('外网 WiFi 已添加 APIPA 地址（169.254.2.1）');
+      // 方法1：设置静态 xxxx地址
+      await execNetsh(['interface', 'ipv4', 'set', 'address', waiwang.name, 'static', '169.254.2.1', '255.255.0.0']);
+      console.log('外网 WiFi 已设置为静态 xxxx地址（169.254.2.1）');
       
     } catch (apipaError) {
-      console.log('添加外网 WiFi APIPA 地址失败，尝试备用方法...', apipaError.message);
+      console.log('设置外网 WiFi xxxx地址失败，尝试备用方法...', apipaError.message);
       
       // 备用方法：使用 PowerShell 直接添加地址
       try {
@@ -1084,10 +1072,11 @@ async function enableBothNetworks() {
           # 获取外网 WiFi 适配器
           $adapter = Get-NetAdapter | Where-Object {$_.Name -eq '${waiwang.name}'}
           if ($adapter) {
-            # 直接添加静态 APIPA 地址，不禁用 DHCP
+            # 先移除现有IP配置，然后设置静态 xxxx地址
+            Remove-NetIPAddress -InterfaceAlias '${waiwang.name}' -Confirm:$false -ErrorAction SilentlyContinue
             New-NetIPAddress -InterfaceAlias '${waiwang.name}' -IPAddress '169.254.2.1' -PrefixLength 16 -ErrorAction SilentlyContinue
             
-            Write-Output "外网 WiFi 已添加 APIPA 地址"
+            Write-Output "外网 WiFi 已设置为静态 xxxx地址"
           } else {
             Write-Output "未找到外网 WiFi 适配器"
           }
@@ -1105,7 +1094,7 @@ async function enableBothNetworks() {
           child.stdout.on('data', (data) => { output += data.toString(); });
           child.on('close', (code) => {
             if (code === 0) {
-              console.log('PowerShell 添加外网 WiFi APIPA 成功');
+              console.log('PowerShell 设置外网 WiFi xxxx成功');
               resolve();
             } else {
               console.log('PowerShell 设置失败，继续...');
