@@ -35,6 +35,20 @@
 
 !macro customUnInstall
     ; 卸载时执行的操作
+    DetailPrint "正在清理应用程序数据..."
+    
+    ; 删除桌面快捷方式
+    DetailPrint "删除桌面快捷方式..."
+    SetShellVarContext current
+    Delete "$DESKTOP\EasyCut.lnk"
+    Delete "$DESKTOP\Electron.lnk"
+    
+    ; 删除开始菜单快捷方式
+    DetailPrint "删除开始菜单快捷方式..."
+    SetShellVarContext all
+    Delete "$SMPROGRAMS\EasyCut.lnk"
+    
+    ; 重置激活码
     DetailPrint "正在重置激活码..."
     
     ; 获取用户目录
@@ -50,5 +64,9 @@
     ; 尝试删除 .easycut 目录
     RMDir "$0\.easycut"
     
-    DetailPrint "激活码重置完成"
+    ; 刷新桌面图标缓存
+    DetailPrint "刷新桌面图标缓存..."
+    System::Call 'shell32.dll::SHChangeNotify(i 0x8000000, i 0, i 0, i 0)'
+    
+    DetailPrint "卸载清理完成"
 !macroend
