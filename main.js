@@ -1206,7 +1206,7 @@ ipcMain.handle('check-admin', async () => {
 // 检查网络连通性（ping baidu.com）
 ipcMain.handle('check-network-connectivity', async () => {
   return new Promise(resolve => {
-    exec('ping -n 1 baidu.com', { encoding: 'buffer' }, (error, stdout, stderr) => {
+    exec('ping -n 1 www.baidu.com', { encoding: 'buffer' }, (error, stdout, stderr) => {
       if (error) {
         console.error(`[后端] Ping baidu.com 失败: ${error.message}`);
         resolve(false);
