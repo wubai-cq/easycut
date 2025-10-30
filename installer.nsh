@@ -55,7 +55,7 @@
     ReadRegStr $0 HKCU "Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders" "Personal"
     
     ; 构建激活文件路径
-    StrCpy $1 "$0\.easycut\activation.json"
+    StrCpy $1 "$0\.easycut\uck.ddl"
     
     ; 直接尝试删除激活文件
     Delete "$1"

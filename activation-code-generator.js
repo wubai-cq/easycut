@@ -1,4 +1,5 @@
 const ActivationManager = require('./activation');
+const { query, ensureSchema } = require('./db');
 
 // 激活码生成器类
 class ActivationCodeGenerator {
@@ -54,6 +55,31 @@ class ActivationCodeGenerator {
             codes.push(this.generateCode());
         }
         return codes;
+    }
+
+    // 从数据库校验唯一并插入到有效表
+    async generateUniqueAndInsert(count = 10) {
+        await ensureSchema();
+        const inserted = [];
+        while (inserted.length < count) {
+            const candidate = this.generateCode();
+            const { valid, code } = this.activationManager.validateActivationCode(candidate);
+            if (!valid) continue;
+            const clean = code;
+
+            // 避免重复：检查 used 和 valid
+            const [used, validRow] = await Promise.all([
+                query('SELECT id FROM used_activation_codes WHERE usedCode = ? LIMIT 1', [clean]),
+                query('SELECT id FROM valid_activation_codes WHERE validCode = ? LIMIT 1', [clean])
+            ]);
+            if (used.length > 0 || validRow.length > 0) {
+                continue; // 已存在则重试
+            }
+
+            await query('INSERT INTO valid_activation_codes (validCode) VALUES (?)', [clean]);
+            inserted.push(clean);
+        }
+        return inserted;
     }
 
     // 验证激活码
@@ -161,6 +187,7 @@ function showHelp() {
     console.log('  --test, -t              生成并测试一个激活码');
     console.log('  --report, -r [数量]     生成激活码报告 (默认: 100)');
     console.log('  --export, -e [数量]     生成并导出激活码到文件 (默认: 50)');
+    console.log('  --db-generate [数量]    生成指定数量激活码并写入数据库');
     console.log('  --help, -h              显示帮助信息');
     console.log('');
     console.log('示例:');
@@ -187,6 +214,22 @@ function main() {
         codes.forEach((code, index) => {
             console.log(`${index + 1}. ${code}`);
         });
+    }
+
+    if (args.includes('--db-generate')) {
+        const idx = args.indexOf('--db-generate');
+        const count = parseInt(args[idx + 1] || '10');
+        (async () => {
+            console.log(`\n=== 生成 ${count} 个唯一激活码并写入数据库 ===`);
+            try {
+                const inserted = await generator.generateUniqueAndInsert(count);
+                inserted.forEach((code, i) => console.log(`${i + 1}. ${code}`));
+                console.log(`完成，写入数量: ${inserted.length}`);
+            } catch (e) {
+                console.error('写入数据库失败:', e.message);
+            }
+        })();
+        return;
     }
 
     if (args.includes('--test') || args.includes('-t')) {

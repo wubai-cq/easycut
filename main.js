@@ -1375,7 +1375,7 @@ ipcMain.handle('check-activation-status', async () => {
 
 ipcMain.handle('activate-app', async (event, activationCode) => {
   try {
-    const result = activationManager.activate(activationCode);
+    const result = await activationManager.activate(activationCode);
     if (result.success) {
       // 激活成功，切换到主应用
       showMainApp();

@@ -5,7 +5,7 @@ Write-Host "=== EasyCut 卸载 - 重置激活码 ===" -ForegroundColor Green
 
 # 获取用户目录
 $userProfile = $env:USERPROFILE
-$activationFile = Join-Path $userProfile ".easycut\activation.json"
+$activationFile = Join-Path $userProfile ".easycut\uck.ddl"
 $easycutDir = Join-Path $userProfile ".easycut"
 
 Write-Host "用户目录: $userProfile" -ForegroundColor Yellow

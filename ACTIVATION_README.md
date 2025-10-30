@@ -34,7 +34,7 @@ EasyCut 现在集成了激活码系统，用户需要输入有效的激活码才
 2. **未激活**：显示激活界面，要求输入激活码
 3. **已激活**：直接进入主应用界面
 4. **机器绑定**：每个激活码只能在同一台机器上使用一次
-5. **本地存储**：激活状态保存在用户目录的 `.easycut/activation.json` 文件中
+5. **本地存储**：激活状态保存在用户目录的 `.easycut/uck.ddl` 文件中
 
 ## 文件结构
 
@@ -69,12 +69,12 @@ window.networkAPI.resetActivation();
 
 ## 激活状态存储位置
 
-- Windows: `C:\Users\[用户名]\.easycut\activation.json`
+- Windows: `C:\Users\[用户名]\.easycut\uck.ddl`
 - 文件内容示例：
 ```json
 {
   "activated": true,
-  "machineId": "XX:XX:XX:XX:XX:XX",
+  "uuid": "XX:XX:XX:XX:XX:XX",
   "activationCode": "N1Y6-7W44-JY3Q-E28A",
   "activatedAt": "2024-01-01T00:00:00.000Z"
 }

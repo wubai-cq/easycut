@@ -7,7 +7,7 @@ function resetActivationOnUninstall() {
     try {
         console.log('=== 应用卸载 - 重置激活码 ===');
         
-        const activationFile = path.join(os.homedir(), '.easycut', 'activation.json');
+        const activationFile = path.join(os.homedir(), '.easycut', 'uck.ddl');
         
         // 检查激活文件是否存在
         if (fs.existsSync(activationFile)) {
