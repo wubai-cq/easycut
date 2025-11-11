@@ -1,8 +1,0 @@
-{
-	"host": "42.121.253.186",
-	"port": 3306,
-	"user": "wubai",
-	"password": "cZDEcbxQSSe3Q8YC97aBmA==",  
-	"passwordEncrypted": true,
-	"database": "easycut"
-  }

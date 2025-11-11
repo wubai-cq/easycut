@@ -23,7 +23,7 @@ if (process.platform === 'win32') {
   app.setAboutPanelOptions({
     applicationName: 'EasyCut',
     applicationVersion: '1.0.0',
-    copyright: 'Copyright (C) 2024 EasyCut',
+    copyright: 'Copyright (C) 2025 wubai EasyCut',
     credits: 'EasyCut - 双网切换工具'
   });
   
@@ -83,7 +83,7 @@ if (process.platform === 'win32') {
     }).join(' ');
     
     try {
-      // 使用 iconv 转换为 GBK 编码输出到 CMD
+      // 使用 iconv 转换为 GBK 编码输出到 
       const buffer = iconv.encode(message + '\n', 'gbk');
       process.stderr.write(buffer);
     } catch (e) {
@@ -103,7 +103,7 @@ function execNetsh(args) {
     console.log('执行命令: netsh', args.join(' '));
 
     // 为了避免不同主机控制台代码页差异导致的乱码：
-    // 通过 cmd 先切换到 UTF-8，再执行 netsh；随后优先按 UTF-8 解码
+    // 通过  先切换到 UTF-8；随后优先按 UTF-8 解码
     const cmdLine = `chcp 65001>nul & netsh ${args.join(' ')}`;
     const child = spawn('cmd', ['/c', cmdLine], {
       windowsHide: true,
@@ -249,7 +249,7 @@ app.setAppUserModelId('com.easycut.app');
 // 禁用Alt键菜单功能
 app.commandLine.appendSwitch('disable-features', 'VizDisplayCompositor');
 
-// 当 Electron 完成初始化时创建窗口
+// 当  完成初始化时创建窗口
 app.whenReady().then(() => {
   // 检查管理员权限
   exec('net session', (error) => {
@@ -892,10 +892,10 @@ async function switchToWaiwang() {
     // 等待 WiFi 连接建立
     await new Promise(resolve => setTimeout(resolve, 2000));
     
-    // 恢复 WiFi 的正常 DHCP 设置（简化版本，避免断开连接）
+    // 恢复 WiFi 的正常  设置（简化版本，避免断开连接）
     try {
       
-      // 1. 直接设置 DHCP 模式（不禁用接口）
+      // 1. 直接设置  模式（不禁用接口）
       await execNetsh(['interface', 'ipv4', 'set', 'interface', waiwang.name, 'dhcp=enabled']);
       
       // 2. 释放当前 IP 地址
@@ -1026,11 +1026,11 @@ async function enableBothNetworks() {
     await enableInterface(neiwang.name);
     console.log('内网接口已启用（保持连接）');
     
-    // 2. 恢复内网为正常 DHCP 连接（不修改内网配置）
+    // 2. 恢复内网为正常  连接（不修改内网配置）
     try {
       console.log('恢复内网为正常 DHCP 连接...');
       
-      // 1. 设置内网为 DHCP 模式
+      // 1. 设置内网为  模式
       await execNetsh(['interface', 'ipv4', 'set', 'address', neiwang.name, 'dhcp']);
       console.log('已重置内网为 DHCP 模式');
       
@@ -1206,7 +1206,7 @@ ipcMain.handle('check-admin', async () => {
 // 检查网络连通性（ping baidu.com）
 ipcMain.handle('check-network-connectivity', async () => {
   return new Promise(resolve => {
-    exec('ping -n 1 www.baidu.com', { encoding: 'buffer' }, (error, stdout, stderr) => {
+    exec('ping -n 1 codefather.cn', { encoding: 'buffer' }, (error, stdout, stderr) => {
       if (error) {
         console.error(`[后端] Ping baidu.com 失败: ${error.message}`);
         resolve(false);

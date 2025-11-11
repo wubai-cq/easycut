@@ -9,6 +9,8 @@ let btnRefresh;
 let interfaceList;
 let statusText;
 let adminWarning;
+let shareButton;
+let shareOverlay;
 
 // 激活界面相关元素
 let activationScreen;
@@ -289,6 +291,8 @@ window.addEventListener('DOMContentLoaded', () => {
     interfaceList = document.getElementById('interface-list');
     statusText = document.getElementById('status-text');
     adminWarning = document.getElementById('admin-warning');
+    shareButton = document.getElementById('btn-share');
+    shareOverlay = document.getElementById('share-overlay');
     
     // 确保 DOM 元素已加载后再绑定事件监听
     if (btnStopLink) {
@@ -333,6 +337,33 @@ window.addEventListener('DOMContentLoaded', () => {
         });
     } else {
         console.error('[前端] 未找到刷新按钮元素');
+    }
+
+    // 分享覆盖文字：点击右上角按钮只保留背景与文字
+    if (shareButton && shareOverlay) {
+        shareButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            // 隐藏主界面，仅显示一段文字
+            if (mainApp) mainApp.style.display = 'none';
+            if (activationScreen) activationScreen.style.display = 'none';
+            shareOverlay.style.display = 'flex';
+        });
+        // 点击覆盖层恢复主界面
+        shareOverlay.addEventListener('click', () => {
+            shareOverlay.style.display = 'none';
+            if (activationScreen && (!mainApp || mainApp.style.display === 'none')) {
+                // 若未激活则显示激活界面
+                const status = window.networkAPI ? null : null;
+            }
+            if (mainApp) mainApp.style.display = 'flex';
+        });
+        // Esc 关闭
+        document.addEventListener('keydown', (evt) => {
+            if (evt.key === 'Escape' && shareOverlay && shareOverlay.style.display !== 'none') {
+                shareOverlay.style.display = 'none';
+                if (mainApp) mainApp.style.display = 'flex';
+            }
+        });
     }
     
     // 添加键盘快捷键支持
@@ -541,4 +572,3 @@ function showMainApp() {
         console.log('[前端] 主应用已显示');
     }
 }
-

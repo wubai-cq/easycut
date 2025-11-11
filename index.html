@@ -45,6 +45,12 @@
 
     <!-- 主应用界面 -->
     <div id="main-app" class="container" style="display: none !important;">
+        <div class="top-actions">
+            <span class="share-label">留言</span>
+            <button id="btn-share" class="share-icon">
+                <img src="assets/icon_share.svg" alt="share" width="20" height="20"/>
+            </button>
+        </div>
         <!-- 管理员权限提示 -->
         <div id="admin-warning" class="warning-box" style="display: none;">
             ⚠️ 请以管理员身份运行此程序
@@ -52,7 +58,7 @@
 
         <!-- 快速切换按钮区域 -->
         <div class="quick-switch-section">
-            <h2>快速切换</h2>
+            <h2>模式切换</h2>
             <div class="button-group">
                 <button id="btn-stop-link" class="action-button stop-button">
                     <span class="button-text">启用外网</span>
@@ -72,7 +78,10 @@
         <div class="interface-section">
             <div class="section-header">
                 <h2>网络接口</h2>
-                <button id="btn-refresh" class="refresh-button" title="强制重新加载（Ctrl+Shift+R）">刷新</button>
+                <button id="btn-refresh" class="refresh-button" title="强制重新加载（Ctrl+Shift+R）">
+                    <span class="refresh-label">更新</span>
+                    <img src="assets/icon_refresh.png" alt="刷新" class="refresh-icon" width="20" height="20"/>
+                </button>
             </div>
             
             <div id="interface-list" class="interface-list">
@@ -83,6 +92,14 @@
         <!-- 状态栏 -->
         <div id="status-bar" class="status-bar">
             <span id="status-text">就绪</span>
+        </div>
+    </div>
+
+    <!-- 分享覆盖层（二维码 + 文案） -->
+    <div id="share-overlay" class="share-overlay" style="display: none;">
+        <div class="share-wrapper">
+            <img src="assets/icon_wubai.png" alt="分享二维码" class="share-qr">
+            <div class="share-text">公众号500佰<br>欢迎留言 发送EasyCut获取下载链接</div>
         </div>
     </div>
 

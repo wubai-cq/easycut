@@ -3,18 +3,17 @@ const path = require('path');
 const os = require('os');
 const crypto = require('crypto');
 const { execSync } = require('child_process');
-const { query } = require('./db');
+const { query } = require('./other');
 
 class ActivationManager {
   constructor() {
-    this.activationFile = path.join(os.homedir(), '.easycut', 'uck.ddl');
+    this.activationFile = path.join(os.homedir(), '.easycut', 'uck.dll');
     this.ensureActivationDir();
-    // 轻量级本地签名密钥（用于防止伪造文件）。
-    // 注意：这是提升门槛的手段，不等同于服务端签发的许可证。
+    // （伪造文件）。
     this.localSecret = 'e3c1c2aa-9c2c-4f5e-9b7c-9f7b1b7a8f12';
   }
 
-  // 确保激活目录存在
+  // 确保激活存在
   ensureActivationDir() {
     const dir = path.dirname(this.activationFile);
     if (!fs.existsSync(dir)) {
@@ -22,12 +21,12 @@ class ActivationManager {
     }
   }
 
-  // 获取机器唯一标识
+  // 获取标识
   getuuid() {
-    // 优先使用 Windows 的 MachineGuid，更稳定，不受网卡更换影响
+    // 优先使用 Windows不受网卡更换影响
     if (process.platform === 'win32') {
       try {
-        // 查询注册表: HKLM\SOFTWARE\Microsoft\Cryptography\MachineGuid
+        // 查询表: HKLM\SOFTWARE\Microsoft\Cryptography\MachineGuid
         const output = execSync('reg query "HKLM\\SOFTWARE\\Microsoft\\Cryptography" /v MachineGuid', {
           stdio: ['ignore', 'pipe', 'ignore']
         }).toString('utf8');
@@ -52,18 +51,13 @@ class ActivationManager {
       }
       return macAddresses[0] || 'unknown';
     } catch (error) {
-      console.error('获取机器ID失败:', error);
+      console.error('获取ID失败:', error);
       return 'unknown';
     }
   }
 
-  // 校验激活码格式
+  // 校
   validateActivationCode(code) {
-    // 激活码规则：N1Y6-7W44-JY3Q-E28A
-    // 第1位：字母，第2位：数字，第3位：字母，第4位：数字
-    // 第5位：数字，第6位：字母，第7位：数字，第8位：数字
-    // 第9位：字母，第10位：字母，第11位：数字，第12位：字母
-    // 最后四位：大写字母与数字组合随机
     
     if (!code || typeof code !== 'string') {
       return { valid: false, error: '激活码不正确' };
@@ -128,11 +122,10 @@ class ActivationManager {
       const data = fs.readFileSync(this.activationFile, 'utf8');
       const activation = JSON.parse(data);
       
-      // 检查机器ID是否匹配
+      // 检查ID是否匹配
       const currentuuid = this.getuuid();
-      // 文件不再包含uuid，仅用当前真实uuid参与签名校验
 
-      // 验证本地签名，防止随意伪造 uck.ddl
+      // 验证本地签名，防止随意伪造 
       const activatedAt = activation.activatedAt || '';
       const payload = `${activation.activationCode}:${activatedAt}:${currentuuid}`;
       const expectedSig = crypto
@@ -238,7 +231,7 @@ class ActivationManager {
       return { success: true, message: '激活成功' };
     } catch (err) {
       // 仅在控制台记录详细错误，不向前端暴露细节
-      try { console.error('激活失败（内部错误）');err && console.error(err) } catch {}
+      try { console.error('（内部错误）')} catch {}
       return { success: false, error: '激活失败请检查网络连接' };
     }
   }

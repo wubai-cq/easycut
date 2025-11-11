@@ -9,7 +9,7 @@
     DetailPrint "正在修复应用程序元数据..."
     
     ; 使用 rcedit 修复元数据和图标
-    ExecWait '"$INSTDIR\node_modules\rcedit\bin\rcedit.exe" "$INSTDIR\EasyCut.exe" --set-version-string "FileDescription" "EasyCut" --set-version-string "ProductName" "EasyCut" --set-version-string "CompanyName" "EasyCut" --set-version-string "LegalCopyright" "Copyright (C) 2024 wubai rights reserved." --set-version-string "OriginalFilename" "EasyCut.exe" --set-version-string "InternalName" "EasyCut" --set-version-string "LegalTrademarks" "EasyCut" --set-file-version "1.0.0" --set-product-version "1.0.0" --set-icon "$INSTDIR\icon.ico"'
+    ExecWait '"$INSTDIR\node_modules\rcedit\bin\rcedit.exe" "$INSTDIR\EasyCut.exe" --set-version-string "FileDescription" "EasyCut" --set-version-string "ProductName" "EasyCut" --set-version-string "CompanyName" "EasyCut" --set-version-string "LegalCopyright" "Copyright (C) 2025 wubai rights reserved." --set-version-string "OriginalFilename" "EasyCut.exe" --set-version-string "InternalName" "EasyCut" --set-version-string "LegalTrademarks" "EasyCut" --set-file-version "1.0.0" --set-product-version "1.0.0" --set-icon "$INSTDIR\icon.ico"'
     
     DetailPrint "应用程序元数据修复完成"
     
@@ -30,6 +30,10 @@
     ; 清理可能存在的旧Electron快捷方式（静默删除）
     Delete "$DESKTOP\Electron.lnk"
     
+    ; 为主程序添加兼容性层：以管理员身份运行（快捷方式勾选效果）
+    DetailPrint "设置快捷方式以管理员身份运行..."
+    WriteRegStr HKCU "Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers" "$INSTDIR\EasyCut.exe" "RUNASADMIN"
+
     DetailPrint "桌面快捷方式创建完成"
 !macroend
 
@@ -55,7 +59,7 @@
     ReadRegStr $0 HKCU "Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders" "Personal"
     
     ; 构建激活文件路径
-    StrCpy $1 "$0\.easycut\uck.ddl"
+    StrCpy $1 "$0\.easycut\uck.dll"
     
     ; 直接尝试删除激活文件
     Delete "$1"
@@ -63,6 +67,11 @@
     
     ; 尝试删除 .easycut 目录
     RMDir "$0\.easycut"
+    
+    ; 恢复网络配置（动态检测接口）
+    DetailPrint "正在恢复网络配置..."
+    ExecWait 'powershell.exe -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -Command "$$interfaces = Get-NetAdapter | Where-Object {$$_.Name -like \"*neiwang*\" }; foreach ($$iface in $$interfaces) { $$name = $$iface.Name; netsh interface set interface \"$$name\" admin=ENABLED; netsh interface ipv4 set address \"$$name\" dhcp; netsh interface ipv4 set dns \"$$name\" dhcp }"'
+    DetailPrint "网络配置已恢复"
     
     ; 刷新桌面图标缓存
     DetailPrint "刷新桌面图标缓存..."
