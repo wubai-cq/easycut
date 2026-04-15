@@ -1,0 +1,589 @@
+/* ========================================
+   设置面板样式
+   ======================================== */
+
+/* 设置图标按钮 */
+.settings-icon {
+    width: 34px;
+    height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: transparent;
+    border-radius: 0;
+    cursor: pointer;
+    padding: 0;
+    outline: none;
+    box-shadow: none;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    color: #39e6cf;
+}
+
+.settings-icon:hover {
+    background: rgba(57, 230, 207, 0.1);
+    transform: scale(1.1) rotate(90deg);
+}
+
+.settings-icon:active {
+    transform: scale(0.95) rotate(90deg);
+}
+
+.settings-icon svg {
+    transition: filter 0.25s ease;
+}
+
+.settings-icon:hover svg {
+    filter: drop-shadow(0 0 8px rgba(57, 230, 207, 0.6));
+}
+
+/* 设置面板遮罩层 */
+.settings-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    opacity: 0;
+    animation: fadeIn 0.3s ease forwards;
+}
+
+.settings-overlay.closing {
+    animation: fadeOut 0.2s ease forwards;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+/* 设置模态框 */
+.settings-modal {
+    width: 480px;
+    max-height: 80vh;
+    background: #1a1d2e;
+    border: 1px solid #2a2d3e;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+.settings-overlay.closing .settings-modal {
+    animation: modalSlideOut 0.2s ease-in;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+@keyframes modalSlideOut {
+    from {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: scale(0.9) translateY(-20px);
+    }
+}
+
+/* 设置头部 */
+.settings-header {
+    background: #0E1122;
+    border-bottom: 1px solid #2a2d3e;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.settings-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #ffffff;
+    margin: 0;
+}
+
+.close-button {
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: transparent;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #8a8d9e;
+    transition: all 0.2s ease;
+}
+
+.close-button:hover {
+    background: #2a2d3e;
+    color: #ffffff;
+}
+
+.close-button:active {
+    transform: scale(0.95);
+}
+
+/* 设置内容 */
+.settings-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    scrollbar-width: thin;
+    scrollbar-color: #2a2d3e transparent;
+}
+
+.settings-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.settings-content::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.settings-content::-webkit-scrollbar-thumb {
+    background: #2a2d3e;
+    border-radius: 3px;
+}
+
+.settings-content::-webkit-scrollbar-thumb:hover {
+    background: #3a3d4e;
+}
+
+/* 设置分组 */
+.settings-group {
+    margin-bottom: 24px;
+}
+
+.settings-group:last-child {
+    margin-bottom: 0;
+}
+
+.settings-group-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #39e6cf;
+    margin: 0 0 12px 0;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(57, 230, 207, 0.2);
+}
+
+.settings-group:first-child .settings-group-title {
+    margin-top: 0;
+}
+
+/* 设置项 */
+.setting-item {
+    background: #0E1122;
+    border: 1px solid #2a2d3e;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: border-color 0.2s ease;
+}
+
+.setting-item:last-child {
+    margin-bottom: 0;
+}
+
+.setting-item:hover {
+    border-color: #3a3d4e;
+}
+
+.setting-info {
+    flex: 1;
+}
+
+.setting-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 4px;
+}
+
+.setting-desc {
+    font-size: 13px;
+    color: #8a8d9e;
+    line-height: 1.5;
+}
+
+/* 开关按钮 */
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+    flex-shrink: 0;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    inset: 0;
+    background: #2a2d3e;
+    border-radius: 12px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.toggle-slider::before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background: #ffffff;
+    border-radius: 50%;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.toggle-switch input:checked + .toggle-slider {
+    background: #28a745;
+    box-shadow: 0 0 8px rgba(40, 167, 69, 0.4);
+}
+
+.toggle-switch input:checked + .toggle-slider::before {
+    transform: translateX(20px);
+}
+
+.toggle-switch:hover .toggle-slider {
+    box-shadow: 0 0 6px rgba(57, 230, 207, 0.3);
+}
+
+/* 单选按钮组 */
+.radio-group {
+    display: flex;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+.radio-option {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.radio-option input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+}
+
+.radio-option::before {
+    content: '';
+    width: 16px;
+    height: 16px;
+    border: 2px solid #2a2d3e;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.radio-option input:checked + .radio-label::before {
+    background: #39e6cf;
+    border-color: #39e6cf;
+}
+
+.radio-option input:checked + .radio-label {
+    color: #39e6cf;
+}
+
+.radio-label {
+    font-size: 14px;
+    color: #e0e6ed;
+    transition: color 0.2s ease;
+    position: relative;
+}
+
+.radio-label::before {
+    content: '';
+    position: absolute;
+    left: -22px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    border: 2px solid #2a2d3e;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.radio-option input:checked ~ .radio-label::before {
+    background: #39e6cf;
+    border-color: #39e6cf;
+}
+
+.radio-option:hover .radio-label::before {
+    border-color: #39e6cf;
+}
+
+/* 下拉选择 */
+.setting-select {
+    width: 140px;
+    height: 36px;
+    background: #0E1122;
+    border: 1px solid #2a2d3e;
+    border-radius: 4px;
+    padding: 0 12px;
+    font-size: 14px;
+    font-family: 'Microsoft YaHei', sans-serif;
+    color: #e0e6ed;
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.2s ease;
+    flex-shrink: 0;
+}
+
+.setting-select:hover {
+    border-color: #39e6cf;
+}
+
+.setting-select:focus {
+    border-color: #39e6cf;
+    box-shadow: 0 0 0 2px rgba(57, 230, 207, 0.1);
+}
+
+.setting-select option {
+    background: #1a1d2e;
+    color: #e0e6ed;
+}
+
+/* 按钮样式 */
+.setting-button {
+    padding: 10px 24px;
+    border: none;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: 'Microsoft YaHei', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.setting-button.primary {
+    background: #28a745;
+    color: #ffffff;
+}
+
+.setting-button.primary:hover {
+    background: #218838;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(40, 167, 69, 0.4);
+}
+
+.setting-button.primary:active {
+    transform: translateY(0) scale(0.98);
+}
+
+.setting-button.primary:disabled {
+    background: #555;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.setting-button.secondary {
+    background: #2a2d3e;
+    color: #e0e6ed;
+}
+
+.setting-button.secondary:hover {
+    background: #3a3d4e;
+}
+
+.setting-button.secondary:active {
+    transform: scale(0.98);
+}
+
+.setting-button.danger {
+    background: #dc3545;
+    color: #ffffff;
+}
+
+.setting-button.danger:hover {
+    background: #c82333;
+}
+
+.setting-button.danger:active {
+    transform: scale(0.98);
+}
+
+/* 底部 */
+.settings-footer {
+    background: #0E1122;
+    border-top: 1px solid #2a2d3e;
+    padding: 16px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.version-info {
+    font-size: 12px;
+    color: #8a8d9e;
+}
+
+.settings-actions {
+    display: flex;
+    gap: 12px;
+}
+
+/* Toast 提示 */
+.toast {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1a1d2e;
+    border: 1px solid #2a2d3e;
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #ffffff;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    z-index: 10001;
+    animation: toastSlideIn 0.3s ease-out;
+}
+
+.toast.success {
+    border-color: #28a745;
+    color: #28a745;
+}
+
+.toast.error {
+    border-color: #dc3545;
+    color: #dc3545;
+}
+
+.toast.hiding {
+    animation: toastSlideOut 0.3s ease-in forwards;
+}
+
+@keyframes toastSlideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+@keyframes toastSlideOut {
+    from {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-20px);
+    }
+}
+
+/* 确认对话框 */
+.confirm-dialog-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10002;
+    animation: fadeIn 0.2s ease;
+}
+
+.confirm-dialog {
+    width: 400px;
+    background: #1a1d2e;
+    border: 1px solid #2a2d3e;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    animation: modalSlideIn 0.2s ease-out;
+}
+
+.confirm-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #ffffff;
+    margin: 0 0 16px 0;
+}
+
+.confirm-message {
+    font-size: 14px;
+    color: #e0e6ed;
+    line-height: 1.6;
+    margin: 0 0 24px 0;
+}
+
+.confirm-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+/* 响应式 */
+@media (max-width: 600px) {
+    .settings-modal {
+        width: 90vw;
+    }
+
+    .settings-header,
+    .settings-footer {
+        padding: 16px;
+    }
+
+    .settings-content {
+        padding: 16px;
+    }
+
+    .settings-actions {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .setting-button {
+        width: 100%;
+    }
+
+    .radio-group {
+        flex-direction: column;
+        gap: 8px;
+    }
+}

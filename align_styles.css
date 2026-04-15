@@ -1,0 +1,148 @@
+/* 新增或调整针对设置面板以匹配新的 V2 风格的样式 */
+
+/* 修复设置模态框背景色和边框，使其匹配深色主题卡片 */
+.settings-modal {
+    background: var(--bg-card) !important;
+    border: 1px solid var(--border-default) !important;
+    border-radius: var(--radius-2xl) !important;
+    box-shadow: var(--shadow-xl) !important;
+}
+
+/* 头部样式调整 */
+.settings-header {
+    background: var(--bg-secondary) !important;
+    border-bottom: 1px solid var(--border-subtle) !important;
+    padding: var(--spacing-lg) !important;
+}
+
+.settings-title {
+    color: var(--text-primary) !important;
+    font-size: var(--text-xl) !important;
+}
+
+/* 内容区滚动条及背景调整 */
+.settings-content {
+    background: var(--bg-primary) !important;
+    padding: var(--spacing-lg) !important;
+}
+
+/* 设置项组样式调整 */
+.settings-group-title {
+    color: var(--accent-primary) !important;
+    border-bottom: 1px solid var(--border-subtle) !important;
+    font-size: var(--text-sm) !important;
+    margin-bottom: var(--spacing-md) !important;
+    padding-bottom: var(--spacing-sm) !important;
+}
+
+/* 具体设置项背景与边框 */
+.setting-item {
+    background: var(--bg-elevated) !important;
+    border: 1px solid var(--border-default) !important;
+    border-radius: var(--radius-lg) !important;
+    padding: var(--spacing-md) !important;
+    margin-bottom: var(--spacing-sm) !important;
+}
+
+.setting-item:hover {
+    border-color: var(--border-strong) !important;
+}
+
+.setting-name {
+    color: var(--text-primary) !important;
+    font-size: var(--text-base) !important;
+}
+
+.setting-desc {
+    color: var(--text-secondary) !important;
+    font-size: var(--text-sm) !important;
+}
+
+/* 滑动开关样式适配 */
+.toggle-slider {
+    background: var(--bg-hover) !important;
+}
+
+.toggle-switch input:checked + .toggle-slider {
+    background: var(--accent-success) !important;
+    box-shadow: none !important;
+}
+
+/* 单选框组 */
+.radio-label {
+    color: var(--text-secondary) !important;
+}
+
+.radio-option input:checked + .radio-label {
+    color: var(--accent-primary) !important;
+}
+
+.radio-option::before, .radio-label::before {
+    border-color: var(--border-strong) !important;
+}
+
+.radio-option input:checked + .radio-label::before,
+.radio-option input:checked ~ .radio-label::before {
+    background: var(--accent-primary) !important;
+    border-color: var(--accent-primary) !important;
+}
+
+/* 下拉菜单 */
+.setting-select {
+    background: var(--bg-hover) !important;
+    border: 1px solid var(--border-default) !important;
+    color: var(--text-primary) !important;
+    border-radius: var(--radius-md) !important;
+}
+
+.setting-select:focus {
+    border-color: var(--accent-primary) !important;
+    box-shadow: none !important;
+}
+
+/* 底部区域 */
+.settings-footer {
+    background: var(--bg-secondary) !important;
+    border-top: 1px solid var(--border-subtle) !important;
+    padding: var(--spacing-md) var(--spacing-lg) !important;
+}
+
+/* 按钮适配 */
+.setting-button {
+    border-radius: var(--radius-md) !important;
+    font-size: var(--text-sm) !important;
+}
+
+.setting-button.primary {
+    background: var(--accent-primary) !important;
+}
+
+.setting-button.primary:hover {
+    background: #2563EB !important; /* Tailwind Blue 600 */
+}
+
+.setting-button.secondary {
+    background: var(--bg-hover) !important;
+    border: 1px solid var(--border-default) !important;
+    color: var(--text-primary) !important;
+}
+
+.setting-button.danger {
+    background: var(--accent-danger) !important;
+}
+
+/* Toast 和 Confirm 对话框的适配 */
+.toast {
+    background: var(--bg-elevated) !important;
+    border: 1px solid var(--border-default) !important;
+    border-radius: var(--radius-lg) !important;
+    color: var(--text-primary) !important;
+}
+
+.confirm-dialog {
+    background: var(--bg-card) !important;
+    border: 1px solid var(--border-default) !important;
+    border-radius: var(--radius-2xl) !important;
+}
+.confirm-title { color: var(--text-primary) !important; }
+.confirm-message { color: var(--text-secondary) !important; }

@@ -1,0 +1,9 @@
+.close-button.icon-button {
+    background: transparent !important;
+    border: none !important;
+    color: var(--text-secondary) !important;
+}
+.close-button.icon-button:hover {
+    background: var(--bg-hover) !important;
+    color: var(--text-primary) !important;
+}

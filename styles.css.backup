@@ -1,0 +1,840 @@
+@import url('settings.css');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Microsoft YaHei', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #0E1122 url('assets/offline_chat_bg.png') no-repeat center center fixed;
+    background-size: cover;
+    color: #333;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 100%;
+    height: 100vh;
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* 标题栏已移除 */
+
+/* 顶部右侧分享icon */
+.top-actions {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    z-index: 10;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.share-icon {
+    width: 34px;
+    height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: transparent;
+    border-radius: 0;
+    cursor: pointer;
+    padding: 0;
+    outline: none;
+    box-shadow: none;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.share-icon:hover {
+    background: rgba(57, 230, 207, 0.1);
+    transform: scale(1.1);
+}
+
+.share-icon:active {
+    transform: scale(0.95);
+}
+
+.share-icon img {
+    transition: filter 0.25s ease;
+}
+
+.share-icon:hover img {
+    filter: drop-shadow(0 0 8px rgba(57, 230, 207, 0.6));
+}
+
+.share-label {
+    font-size: 12px; /* 与“更新”一致 */
+    color: #39e6cf;
+    line-height: 20px;
+}
+
+/* 分享覆盖文本，仅显示一行文字 */
+.share-overlay {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-size: 20px;
+    font-weight: 600;
+    background: transparent; /* 背景不加遮罩，只显示文字 */
+    z-index: 9999;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+}
+
+.share-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+}
+
+.share-qr {
+    width: 240px;
+    max-width: 70vw;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+}
+
+.share-text {
+    font-size: 16px;
+    font-weight: 600;
+    text-align: center;
+}
+
+/* 警告框 */
+.warning-box {
+    background: #fff3cd;
+    border: 1px solid #ffc107;
+    color: #856404;
+    padding: 10px;
+    margin: 15px 20px 0;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 14px;
+}
+
+/* 快速切换区域 */
+.quick-switch-section {
+    padding: 20px;
+    background: transparent;
+}
+
+.quick-switch-section h2 {
+    font-size: 14px;
+    margin-bottom: 15px;
+    color: #ffffff;
+}
+
+.button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.action-button {
+    flex: 1;
+    padding: 20px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);  /* 更流畅的缓动曲线 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    font-family: 'Microsoft YaHei', sans-serif;
+    position: relative;
+    overflow: hidden;
+}
+
+/* 悬停效果 - 提升更大,阴影更柔和 */
+.action-button:hover {
+    transform: translateY(-3px) scale(1.01);  /* 微妙的放大效果 */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25),
+                0 3px 8px rgba(0, 0, 0, 0.15);  /* 双层阴影 */
+}
+
+/* 点击效果 - 按下反馈 */
+.action-button:active {
+    transform: translateY(-1px) scale(0.99);  /* 轻微缩小 */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    transition: all 0.1s ease;  /* 快速响应 */
+}
+
+/* 按钮光晕效果 */
+.action-button::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.4s ease, height 0.4s ease;
+}
+
+.action-button:active::before {
+    width: 300px;
+    height: 300px;
+    opacity: 0;
+}
+
+.action-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    filter: grayscale(0.3);  /* 禁用时灰度效果 */
+}
+
+.action-button:disabled:hover {
+    transform: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.action-button:disabled::before {
+    display: none;
+}
+
+/* 活跃指示器 - 绿色横标 */
+.action-button.active-indicator {
+    position: relative;
+    overflow: hidden;
+}
+
+.action-button.active-indicator::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #00ff00, #00cc00, #00ff00);
+    background-size: 200% 100%;
+    animation: indicator-glow 2s ease-in-out infinite;
+    z-index: 1;
+}
+
+.action-button.active-indicator::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: rgba(0, 255, 0, 0.3);
+    box-shadow: 0 0 8px rgba(0, 255, 0, 0.6);
+    z-index: 2;
+}
+
+@keyframes indicator-glow {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.stop-button {
+    background: #1D2A55;
+    color: white;
+}
+
+.start-button {
+    background: linear-gradient(135deg, #141414 0%, #2a2a2a 100%);
+    color: white;
+}
+
+.smart-button {
+    background: linear-gradient(135deg, #141414 0%, #2a2a2a 100%);
+    color: white;
+}
+
+.both-button {
+    background: linear-gradient(135deg, #141414 0%, #2a2a2a 100%);
+    color: white;
+}
+
+.button-icon {
+    display: none;
+}
+
+.button-text {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.button-desc {
+    font-size: 12px;
+    opacity: 0.9;
+}
+
+/* 分隔线 */
+.divider {
+    height: 1px;
+    background: #2a2d3e;
+    margin: 0 20px;
+}
+
+/* 网络接口管理区域 */
+.interface-section {
+    padding: 20px;
+    flex: 1;
+    overflow-y: auto;
+    background: transparent;
+    /* 隐藏滚动条（Firefox/IE/Edge 旧版）*/
+    scrollbar-width: none;          /* Firefox */
+    -ms-overflow-style: none;       /* IE 10+ */
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.section-header h2 {
+    font-size: 14px;
+    color: #ffffff;
+}
+
+.refresh-button {
+    background: transparent;
+    color: #e0e6ed;
+    border: none;
+    padding: 0;
+    border-radius: 0;
+    cursor: pointer;
+    font-size: 11px;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: auto !important;
+    opacity: 1 !important;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    position: relative;
+}
+
+.refresh-button:hover {
+    background: transparent;
+    color: #ffffff;
+    transform: scale(1.08);
+}
+
+/* 刷新按钮悬停时的光晕效果 */
+.refresh-button:hover .refresh-icon {
+    filter: drop-shadow(0 0 6px rgba(57, 230, 207, 0.6));
+}
+
+.refresh-button:active {
+    transform: scale(0.95);
+}
+
+/* 点击时旋转动画 */
+.refresh-button:active .refresh-icon {
+    animation: spin 0.4s ease-in-out;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.refresh-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: transparent;
+    color: #6c757d;
+}
+
+.refresh-button:disabled:hover {
+    transform: none;
+    background: transparent;
+    color: #6c757d;
+}
+
+.refresh-button:disabled:hover .refresh-icon {
+    filter: none;
+}
+
+.refresh-icon {
+    width: 20px;
+    height: 20px;
+    display: block;
+    transition: filter 0.25s ease, transform 0.25s ease;
+}
+
+.refresh-label {
+    font-size: 12px;
+    color: #39e6cf; /* 参考图2的青绿色 */
+    line-height: 20px;
+    transition: color 0.25s ease;
+}
+
+.refresh-button:hover .refresh-label {
+    color: #5ff5e0;  /* 悬停时更亮的青绿色 */
+}
+
+
+.interface-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.loading {
+    text-align: center;
+    color: #8a8d9e;
+    padding: 20px;
+}
+
+.interface-item {
+    background: #1a1d2e;
+    border: 1px solid #2a2d3e;
+    border-radius: 8px;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.interface-item:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.interface-info {
+    flex: 1;
+}
+
+.interface-name {
+    font-size: 13px;
+    font-weight: bold;
+    color: #ffffff;
+    margin-bottom: 5px;
+}
+
+.interface-status {
+    font-size: 12px;
+    display: flex;
+    gap: 10px;
+}
+
+.status-badge {
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+}
+
+.status-enabled {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-disabled {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.status-connected {
+    background: #d1ecf1;
+    color: #0c5460;
+}
+
+.status-disconnected {
+    background: #e2e3e5;
+    color: #383d41;
+}
+
+.interface-controls {
+    display: flex;
+    gap: 8px;
+}
+
+.control-button {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    font-family: 'Microsoft YaHei', sans-serif;
+    position: relative;
+    overflow: hidden;
+}
+
+/* 按钮点击波纹效果 */
+.control-button::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.4);
+    transform: translate(-50%, -50%);
+    transition: width 0.3s ease, height 0.3s ease, opacity 0.3s ease;
+}
+
+.control-button:active::after {
+    width: 100px;
+    height: 100px;
+    opacity: 0;
+}
+
+.enable-button {
+    background: #28a745;
+    color: white;
+    box-shadow: 0 2px 4px rgba(40, 167, 69, 0.3);
+}
+
+.enable-button:hover {
+    background: #218838;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(40, 167, 69, 0.4);
+}
+
+.enable-button:active {
+    transform: translateY(0) scale(0.98);
+    box-shadow: 0 1px 3px rgba(40, 167, 69, 0.3);
+}
+
+.disable-button {
+    background: #dc3545;
+    color: white;
+    box-shadow: 0 2px 4px rgba(220, 53, 69, 0.3);
+}
+
+.disable-button:hover {
+    background: #c82333;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(220, 53, 69, 0.4);
+}
+
+.disable-button:active {
+    transform: translateY(0) scale(0.98);
+    box-shadow: 0 1px 3px rgba(220, 53, 69, 0.3);
+}
+
+.control-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* 状态栏 */
+.status-bar {
+    background: #0E1122;
+    border-top: 1px solid #2a2d3e;
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #8a8d9e;
+}
+
+#status-text {
+    display: inline-block;
+}
+
+/* 滚动条样式 */
+.interface-section::-webkit-scrollbar {
+    width: 0;                      /* Chrome/Safari/Edge 新版 */
+    height: 0;
+}
+
+.interface-section::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.interface-section::-webkit-scrollbar-thumb {
+    background: transparent;       /* 与背景一致，等效隐藏 */
+}
+
+.interface-section::-webkit-scrollbar-thumb:hover {
+    background: transparent;
+}
+
+/* 信号强度图标样式 */
+.signal-strength {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 20px;
+    margin: 5px 0;
+}
+
+.signal-bar {
+    width: 3px;
+    background: #28a745;
+    border-radius: 1px;
+    transition: all 0.3s ease;
+}
+
+.signal-bar-1 {
+    height: 6px;
+}
+
+.signal-bar-2 {
+    height: 10px;
+}
+
+.signal-bar-3 {
+    height: 14px;
+}
+
+/* 断开连接时的信号强度图标 */
+.signal-disconnected .signal-bar {
+    background: #dc3545;
+    opacity: 0.5;
+}
+
+/* 连接时的信号强度图标动画 */
+.signal-strength:not(.signal-disconnected) .signal-bar-1 {
+    animation: signal-pulse 1.5s ease-in-out infinite;
+}
+
+.signal-strength:not(.signal-disconnected) .signal-bar-2 {
+    animation: signal-pulse 1.5s ease-in-out infinite 0.2s;
+}
+
+.signal-strength:not(.signal-disconnected) .signal-bar-3 {
+    animation: signal-pulse 1.5s ease-in-out infinite 0.4s;
+}
+
+@keyframes signal-pulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scaleY(1);
+    }
+    50% {
+        opacity: 0.6;
+        transform: scaleY(0.8);
+    }
+}
+
+/* 激活界面样式 */
+.activation-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #0E1122;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.activation-container {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+}
+
+.activation-card {
+    background: #1a1d2e;
+    border: 1px solid #2a2d3e;
+    border-radius: 12px;
+    padding: 40px;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.activation-header {
+    margin-bottom: 30px;
+}
+
+.activation-logo {
+    margin-bottom: 20px;
+}
+
+.logo-icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #4a90e2, #357abd);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+    margin: 0 auto;
+}
+
+.activation-title {
+    font-size: 28px;
+    font-weight: bold;
+    color: #ffffff;
+    margin-bottom: 8px;
+}
+
+.activation-subtitle {
+    font-size: 14px;
+    color: #8a8d9e;
+    margin-bottom: 0;
+}
+
+.activation-form {
+    margin-top: 30px;
+}
+
+.input-group {
+    margin-bottom: 25px;
+}
+
+.input-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: #0E1122;
+    border: 2px solid #4a90e2;
+    border-radius: 8px;
+    padding: 0 15px;
+    transition: all 0.3s ease;
+}
+
+.input-container:focus-within {
+    border-color: #4a90e2;
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+}
+
+.input-icon {
+    font-size: 16px;
+    margin-right: 10px;
+    color: #8a8d9e;
+}
+
+.activation-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #ffffff;
+    font-size: 16px;
+    padding: 15px 0;
+    font-family: 'Microsoft YaHei', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.activation-input::placeholder {
+    color: #8a8d9e;
+}
+
+.activation-input.formatted {
+    letter-spacing: 1px;
+}
+
+.activate-button {
+    width: 100%;
+    background: linear-gradient(135deg, #4a90e2, #357abd);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 15px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-family: 'Microsoft YaHei', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(74, 144, 226, 0.2);
+}
+
+/* 按钮光晕动画 */
+.activate-button::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.5s ease, height 0.5s ease;
+}
+
+.activate-button:hover {
+    background: linear-gradient(135deg, #357abd, #2c5aa0);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(74, 144, 226, 0.35),
+                0 3px 8px rgba(74, 144, 226, 0.25);
+}
+
+.activate-button:active {
+    transform: translateY(0) scale(0.98);
+    box-shadow: 0 2px 6px rgba(74, 144, 226, 0.3);
+}
+
+.activate-button:active::before {
+    width: 400px;
+    height: 400px;
+    opacity: 0;
+}
+
+.activate-button:disabled {
+    background: #555;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+    filter: grayscale(0.4);
+}
+
+.activate-button:disabled:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+.activation-message {
+    margin-top: 15px;
+    padding: 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    text-align: center;
+}
+
+.activation-message.success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.activation-message.error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.activation-message.warning {
+    background: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeaa7;
+}
+

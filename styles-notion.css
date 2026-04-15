@@ -1,0 +1,113 @@
+/* ========================================
+   Notion 风格设计系统 - EasyCut 专用
+   ======================================== */
+
+:root {
+  /* ===== 核心颜色 ===== */
+  --notion-black: rgba(0, 0, 0, 0.95);           /* 主要文本，标题，正文 */
+  --pure-white: #ffffff;                          /* 页面背景，卡片表面，按钮文本 */
+  --notion-blue: #0075de;                         /* 主要 CTA，链接颜色，交互强调色 */
+
+  /* ===== 品牌次要色 ===== */
+  --deep-navy: #213183;                           /* 次要品牌色，强调用 */
+  --active-blue: #005bab;                         /* 按钮激活/按下状态 */
+
+  /* ===== 温暖中性色阶 ===== */
+  --warm-white: #f6f5f4;                          /* 背景表面色调，区域交替，微妙卡片填充 */
+  --warm-dark: #31302e;                           /* 深色表面背景，深色区域文本 */
+  --warm-gray-500: #615d59;                       /* 次要文本，描述，静音标签 */
+  --warm-gray-300: #a39e98;                       /* 占位符文本，禁用状态，说明文字 */
+
+  /* ===== 语义强调色 ===== */
+  --teal: #2a9d99;                                /* 成功状态，正面指示器 */
+  --green: #1aae39;                               /* 确认，完成徽章 */
+  --orange: #dd5b00;                              /* 警告状态，注意指示器 */
+  --pink: #ff64c8;                                /* 装饰性强调，功能亮点 */
+  --purple: #391c57;                              /* 高级功能，深度强调 */
+  --brown: #523410;                               /* 泥土色强调，温暖功能区域 */
+
+  /* ===== 交互色 ===== */
+  --link-blue: #0075de;                           /* 主要链接颜色 */
+  --link-light-blue: #62aef0;                     /* 深色背景的浅色链接变体 */
+  --focus-blue: #097fe8;                          /* 交互元素的焦点环 */
+  --badge-blue-bg: #f2f9ff;                       /* 药丸徽章背景，淡蓝色表面 */
+  --badge-blue-text: #097fe8;                     /* 药丸徽章文本，深蓝色提高可读性 */
+
+  /* ===== 阴影与深度 ===== */
+  --card-shadow: rgba(0, 0, 0, 0.04) 0px 4px 18px,
+                 rgba(0, 0, 0, 0.027) 0px 2.025px 7.84688px,
+                 rgba(0, 0, 0, 0.02) 0px 0.8px 2.925px,
+                 rgba(0, 0, 0, 0.01) 0px 0.175px 1.04062px;
+
+  --deep-shadow: rgba(0, 0, 0, 0.01) 0px 1px 3px,
+                 rgba(0, 0, 0, 0.02) 0px 3px 7px,
+                 rgba(0, 0, 0, 0.02) 0px 7px 15px,
+                 rgba(0, 0, 0, 0.04) 0px 14px 28px,
+                 rgba(0, 0, 0, 0.05) 0px 23px 52px;
+
+  --whisper-border: 1px solid rgba(0, 0, 0, 0.1);  /* 标准分隔边框 */
+
+  /* ===== 间距系统 ===== */
+  --spacing-unit: 8px;
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 64px;
+
+  /* ===== 圆角 ===== */
+  --radius-micro: 4px;       /* 按钮，输入框，功能性交互元素 */
+  --radius-subtle: 5px;      /* 链接，列表项，菜单项 */
+  --radius-standard: 8px;    /* 小卡片，容器，内联元素 */
+  --radius-comfortable: 12px; /* 标准卡片，功能容器，图像顶部 */
+  --radius-large: 16px;      /* 英雄卡片，特色内容，促销块 */
+  --radius-pill: 9999px;     /* 徽章，药丸，状态指示器 */
+  --radius-circle: 50%;      /* 标签指示器，头像 */
+
+  /* ===== 字体系统 ===== */
+  --font-family: 'Microsoft YaHei', 'Segoe UI', -apple-system, system-ui, 'Helvetica Neue', sans-serif;
+  --font-size-xs: 12px;      /* 徽章，微小标签 */
+  --font-size-sm: 14px;      /* 说明文字，次要标签 */
+  --font-size-base: 16px;    /* 标准阅读文本 */
+  --font-size-lg: 18px;      /* 强调文本 */
+  --font-size-xl: 22px;      /* 卡片标题 */
+  --font-size-2xl: 26px;     /* 子标题 */
+  --font-size-3xl: 32px;     /* 区域标题 */
+
+  /* ===== 字重 ===== */
+  --font-weight-normal: 400;  /* 正文/阅读 */
+  --font-weight-medium: 500;  /* UI/交互 */
+  --font-weight-semibold: 600; /* 强调/导航 */
+  --font-weight-bold: 700;    /* 标题/展示 */
+
+  /* ===== 行高 ===== */
+  --line-height-tight: 1.0;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.6;
+}
+
+/* ===== 暗色模式变量 ===== */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --notion-black: rgba(255, 255, 255, 0.95);
+    --pure-white: #191919;
+    --warm-white: #202020;
+    --warm-dark: #ffffff;
+    --warm-gray-500: #a0a0a0;
+    --warm-gray-300: #6b6b6b;
+    --notion-blue: #62aef0;
+    --active-blue: #4a9de0;
+    --focus-blue: #62aef0;
+    --link-blue: #62aef0;
+    --link-light-blue: #82c4f8;
+    --badge-blue-bg: #1a3a5a;
+    --badge-blue-text: #62aef0;
+    --whisper-border: 1px solid rgba(255, 255, 255, 0.1);
+
+    --card-shadow: rgba(0, 0, 0, 0.3) 0px 4px 18px,
+                   rgba(0, 0, 0, 0.2) 0px 2.025px 7.84688px,
+                   rgba(0, 0, 0, 0.15) 0px 0.8px 2.925px,
+                   rgba(0, 0, 0, 0.1) 0px 0.175px 1.04062px;
+  }
+}

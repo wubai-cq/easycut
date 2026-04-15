@@ -18,25 +18,25 @@
                     <h1 class="activation-title">EasyCut</h1>
                     <p class="activation-subtitle">专业的网络管理工具</p>
                 </div>
-                
+
                 <div class="activation-form">
                     <div class="input-group">
                         <div class="input-container">
                             <div class="input-icon">🔑</div>
-                            <input 
-                                type="text" 
-                                id="activation-code-input" 
-                                class="activation-input" 
+                            <input
+                                type="text"
+                                id="activation-code-input"
+                                class="activation-input"
                                 placeholder="请输入唯一激活码"
                                 maxlength="19"
                             >
                         </div>
                     </div>
-                    
+
                     <button id="activate-button" class="activate-button">
                         激活许可证
                     </button>
-                    
+
                     <div id="activation-message" class="activation-message" style="display: none;"></div>
                 </div>
             </div>
@@ -45,53 +45,101 @@
 
     <!-- 主应用界面 -->
     <div id="main-app" class="container" style="display: none !important;">
-        <div class="top-actions">
-            <span class="share-label">留言</span>
-            <button id="btn-share" class="share-icon">
-                <img src="assets/icon_share.svg" alt="share" width="20" height="20"/>
-            </button>
+        <!-- 顶部标题栏 -->
+        <div class="app-header">
+            <h1 class="app-title">EasyCut</h1>
+            <div class="header-actions">
+                <button id="btn-settings" class="header-icon-btn">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M12 1v6m0 6v6m4.22-10.22l4.24-4.24M6.34 6.34L2.1 2.1m18.8 9.9h-6m-6 0H2.1m16.12 4.24l4.24 4.24M6.34 17.66l-4.24 4.24"></path>
+                    </svg>
+                </button>
+                <button id="btn-share" class="header-icon-btn">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="18" cy="5" r="3"></circle>
+                        <circle cx="6" cy="12" r="3"></circle>
+                        <circle cx="18" cy="19" r="3"></circle>
+                        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                    </svg>
+                </button>
+            </div>
         </div>
+
         <!-- 管理员权限提示 -->
         <div id="admin-warning" class="warning-box" style="display: none;">
             ⚠️ 请以管理员身份运行此程序
         </div>
 
-        <!-- 快速切换按钮区域 -->
-        <div class="quick-switch-section">
-            <h2>模式切换</h2>
-            <div class="button-group">
-                <button id="btn-stop-link" class="action-button stop-button">
-                    <span class="button-text">启用外网</span>
-                    <span class="button-desc">恢复WiFi正常连接</span>
+        <!-- 网络状态卡片 -->
+        <div class="network-status-card">
+            <div class="status-header">
+                <div class="status-header-left">
+                    <div class="status-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#6B8CFF" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                        </svg>
+                    </div>
+                    <span class="status-label">网络状态</span>
+                </div>
+                <button class="refresh-btn" id="refresh-btn" title="刷新网络状态">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="23 4 23 10 17 10"></polyline>
+                        <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+                    </svg>
                 </button>
-                <button id="btn-smart-network" class="action-button both-button">
-                    <span class="button-text">同时启用</span>
-                    <span class="button-desc">同时启用内外网</span>
-                </button>
+            </div>
+            <div class="status-main" id="network-status">已连接</div>
+            <div class="status-mode">当前模式: <span id="current-mode">双网模式</span></div>
+            <div class="status-tags">
+                <span class="status-tag" id="badge-external">外网: 启用</span>
+                <span class="status-tag" id="badge-internal">内网: 启用</span>
             </div>
         </div>
 
-        <!-- 分隔线 -->
-        <div class="divider"></div>
-
-        <!-- 网络接口区域 -->
-        <div class="interface-section">
-            <div class="section-header">
-                <h2>网络接口</h2>
-                <button id="btn-refresh" class="refresh-button" title="强制重新加载（Ctrl+Shift+R）">
-                    <span class="refresh-label">更新</span>
-                    <img src="assets/icon_refresh.png" alt="刷新" class="refresh-icon" width="20" height="20"/>
-                </button>
+        <!-- 操作按钮区域 -->
+        <div class="action-cards">
+            <!-- 启用外网卡片 -->
+            <div class="action-card" id="card-external">
+                <div class="action-card-icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="1.5">
+                        <path d="M12 2a10 10 0 1 0 10 10H12V2z"></path>
+                        <path d="M12 2a10 10 0 0 1 10 10"></path>
+                        <path d="M12 2a5 5 0 0 1 5 5h-5V2z"></path>
+                        <circle cx="12" cy="12" r="1"></circle>
+                    </svg>
+                </div>
+                <span class="action-card-text">启用外网</span>
+                <div class="action-card-check" style="display: none;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6B8CFF" stroke-width="3">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                </div>
             </div>
-            
-            <div id="interface-list" class="interface-list">
-                <div class="loading">加载中...</div>
+
+            <!-- 同时启用卡片 -->
+            <div class="action-card" id="card-both">
+                <div class="action-card-icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#6B8CFF" stroke-width="1.5">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                    </svg>
+                </div>
+                <span class="action-card-text">同时启用</span>
+                <div class="action-card-check" style="display: none;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6B8CFF" stroke-width="3">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                </div>
             </div>
         </div>
 
-        <!-- 状态栏 -->
-        <div id="status-bar" class="status-bar">
-            <span id="status-text">就绪</span>
+        <!-- 底部状态栏 -->
+        <div class="bottom-status">
+            <span class="status-dot"></span>
+            <span class="status-text" id="status-text">网络模式 (启用外网)</span>
         </div>
     </div>
 
@@ -106,4 +154,3 @@
     <script src="renderer.js"></script>
 </body>
 </html>
-

@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EasyCut - UI 设计原型演示</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* 演示容器 */
+        .demo-wrapper {
+            display: flex;
+            gap: 40px;
+            padding: 40px;
+            background: #0a0a0a;
+            min-height: 100vh;
+        }
+
+        .demo-section {
+            flex: 1;
+        }
+
+        .demo-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #39e6cf;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #2a2d3e;
+        }
+
+        .demo-subtitle {
+            font-size: 14px;
+            color: #8a8d9e;
+            margin-bottom: 30px;
+        }
+
+        /* 原型容器 */
+        .prototype-container {
+            background: #0E1122;
+            border: 2px solid #2a2d3e;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            max-width: 500px;
+        }
+
+        .prototype-frame {
+            width: 100%;
+            min-height: 600px;
+        }
+
+        /* 代码展示 */
+        .code-section {
+            margin-top: 20px;
+        }
+
+        .code-block {
+            background: #1a1d2e;
+            border: 1px solid #2a2d3e;
+            border-radius: 8px;
+            padding: 16px;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 13px;
+            color: #e0e6ed;
+            line-height: 1.6;
+        }
+
+        .code-block .keyword {
+            color: #c792ea;
+        }
+
+        .code-block .string {
+            color: #c3e88d;
+        }
+
+        .code-block .number {
+            color: #f78c6c;
+        }
+
+        .code-block .comment {
+            color: #676e95;
+        }
+
+        /* 特性列表 */
+        .feature-list {
+            margin-top: 30px;
+        }
+
+        .feature-item {
+            background: #1a1d2e;
+            border: 1px solid #2a2d3e;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .feature-icon {
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .feature-content h4 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 4px;
+        }
+
+        .feature-content p {
+            font-size: 13px;
+            color: #8a8d9e;
+            line-height: 1.5;
+        }
+
+        /* 切换按钮 */
+        .switch-buttons {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .switch-btn {
+            flex: 1;
+            padding: 12px;
+            background: #1a1d2e;
+            border: 1px solid #2a2d3e;
+            border-radius: 8px;
+            color: #e0e6ed;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .switch-btn:hover {
+            background: #2a2d3e;
+            border-color: #39e6cf;
+        }
+
+        .switch-btn.active {
+            background: #39e6cf;
+            color: #0E1122;
+            border-color: #39e6cf;
+        }
+    </style>
+</head>
+<body style="background: #0a0a0a;">
+    <div class="demo-wrapper">
+        <!-- 左侧: 原型演示 -->
+        <div class="demo-section">
+            <h2 class="demo-title">🎨 EasyCut UI 设计原型</h2>
+            <p class="demo-subtitle">完整的交互式界面演示,体验流畅的用户交互</p>
+
+            <!-- 切换按钮 -->
+            <div class="switch-buttons">
+                <button class="switch-btn active" onclick="showScreen('activation')">激活界面</button>
+                <button class="switch-btn" onclick="showScreen('main')">主界面</button>
+            </div>
+
+            <!-- 原型容器 -->
+            <div class="prototype-container">
+                <!-- 激活界面 -->
+                <div id="activation-prototype" class="prototype-frame">
+                    <div class="activation-screen" style="display: flex !important;">
+                        <div class="activation-container">
+                            <div class="activation-card">
+                                <div class="activation-header">
+                                    <div class="activation-logo">
+                                        <div class="logo-icon">E</div>
+                                    </div>
+                                    <h1 class="activation-title">EasyCut</h1>
+                                    <p class="activation-subtitle">专业的网络管理工具</p>
+                                </div>
+
+                                <div class="activation-form">
+                                    <div class="input-group">
+                                        <div class="input-container">
+                                            <div class="input-icon">🔑</div>
+                                            <input
+                                                type="text"
+                                                id="demo-activation-code"
+                                                class="activation-input"
+                                                placeholder="请输入唯一激活码"
+                                                maxlength="19"
+                                                oninput="formatActivationCode(this)"
+                                            >
+                                        </div>
+                                    </div>
+
+                                    <button id="demo-activate-button" class="activate-button" onclick="simulateActivation()">
+                                        激活许可证
+                                    </button>
+
+                                    <div id="demo-activation-message" class="activation-message" style="display: none;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 主界面 -->
+                <div id="main-prototype" class="prototype-frame" style="display: none;">
+                    <div id="main-app" class="container" style="display: flex !important;">
+                        <div class="top-actions">
+                            <span class="share-label">留言</span>
+                            <button id="btn-share-demo" class="share-icon" onclick="toggleShare()">
+                                <img src="assets/icon_share.svg" alt="share" width="20" height="20"/>
+                            </button>
+                        </div>
+
+                        <div class="quick-switch-section">
+                            <h2>模式切换</h2>
+                            <div class="button-group">
+                                <button id="btn-stop-link-demo" class="action-button stop-button" onclick="switchMode('external')">
+                                    <span class="button-text">启用外网</span>
+                                    <span class="button-desc">恢复WiFi正常连接</span>
+                                </button>
+                                <button id="btn-smart-network-demo" class="action-button both-button active-indicator" onclick="switchMode('both')">
+                                    <span class="button-text">同时启用</span>
+                                    <span class="button-desc">同时启用内外网</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="divider"></div>
+
+                        <div class="interface-section">
+                            <div class="section-header">
+                                <h2>网络接口</h2>
+                                <button class="refresh-button" onclick="refreshInterfaces()">
+                                    <span class="refresh-label">更新</span>
+                                    <img src="assets/icon_refresh.png" alt="刷新" class="refresh-icon" width="20" height="20"/>
+                                </button>
+                            </div>
+
+                            <div class="interface-list" id="demo-interface-list">
+                                <!-- WiFi 接口 -->
+                                <div class="interface-item">
+                                    <div class="interface-info">
+                                        <div class="interface-name">WiFi - 内网</div>
+                                        <div class="interface-status">
+                                            <span class="status-badge status-connected">已连接</span>
+                                            <span style="color: #8a8d9e;">信号强度: 强</span>
+                                        </div>
+                                    </div>
+                                    <div class="interface-controls">
+                                        <button class="control-button disable-button" onclick="toggleInterface(this, 'WiFi')">禁用</button>
+                                    </div>
+                                </div>
+
+                                <!-- 以太网接口 -->
+                                <div class="interface-item">
+                                    <div class="interface-info">
+                                        <div class="interface-name">以太网 - 外网</div>
+                                        <div class="interface-status">
+                                            <span class="status-badge status-disabled">已禁用</span>
+                                        </div>
+                                    </div>
+                                    <div class="interface-controls">
+                                        <button class="control-button enable-button" onclick="toggleInterface(this, '以太网')">启用</button>
+                                    </div>
+                                </div>
+
+                                <!-- 蓝牙网络 -->
+                                <div class="interface-item">
+                                    <div class="interface-info">
+                                        <div class="interface-name">蓝牙网络</div>
+                                        <div class="interface-status">
+                                            <span class="status-badge status-disconnected">未连接</span>
+                                        </div>
+                                    </div>
+                                    <div class="interface-controls">
+                                        <button class="control-button enable-button" onclick="toggleInterface(this, '蓝牙')">启用</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="status-bar">
+                            <span id="status-text-demo">就绪</span>
+                        </div>
+                    </div>
+
+                    <!-- 分享覆盖层 -->
+                    <div id="share-overlay-demo" class="share-overlay" style="display: none;" onclick="toggleShare()">
+                        <div class="share-wrapper">
+                            <img src="assets/icon_wubai.png" alt="分享二维码" class="share-qr">
+                            <div class="share-text">公众号500佰<br>欢迎留言 发送EasyCut获取下载链接</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 右侧: 设计说明 -->
+        <div class="demo-section">
+            <h2 class="demo-title">📖 设计说明</h2>
+
+            <div class="feature-list">
+                <div class="feature-item">
+                    <div class="feature-icon">🎯</div>
+                    <div class="feature-content">
+                        <h4>深色科技风</h4>
+                        <p>采用深海军黑背景 (#0E1122) 配合青绿强调色 (#39e6cf),营造专业的网络管理工具氛围</p>
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">✨</div>
+                    <div class="feature-content">
+                        <h4>流畅交互</h4>
+                        <p>使用 cubic-bezier 缓动曲线,悬停提升、点击缩放、光晕扩散等微交互,让每次操作都有反馈</p>
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">🎨</div>
+                    <div class="feature-content">
+                        <h4>语义化颜色</h4>
+                        <p>绿色表示成功/启用,红色表示危险/禁用,蓝色表示信息/连接,清晰直观</p>
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">📱</div>
+                    <div class="feature-content">
+                        <h4>中文优化</h4>
+                        <p>使用 Microsoft YaHei 字体,字号、行高、字重都针对中文界面优化</p>
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">⚡</div>
+                    <div class="feature-content">
+                        <h4>状态可视化</h4>
+                        <p>通过颜色徽章、动画条、图标旋转等视觉元素,实时反映网络状态</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="code-section">
+                <h3 style="font-size: 16px; font-weight: 600; color: #ffffff; margin: 20px 0 12px;">💻 核心设计代码</h3>
+                <div class="code-block">
+<span class="comment">/* 主要按钮样式 */</span>
+.action-button {
+    background: <span class="string">#1D2A55</span>;
+    color: <span class="string">#ffffff</span>;
+    padding: <span class="number">20px</span>;
+    border-radius: <span class="number">10px</span>;
+    transition: all <span class="number">0.3s</span> cubic-bezier(<span class="number">0.4, 0, 0.2, 1</span>);
+}
+
+.action-button:hover {
+    transform: translateY(<span class="number">-3px</span>) scale(<span class="number">1.01</span>);
+    box-shadow: <span class="number">0 6px 20px</span> rgba(<span class="number">0,0,0,0.25</span>);
+}
+                </div>
+
+                <div class="code-block" style="margin-top: 12px;">
+<span class="comment">/* 青绿强调色 */</span>
+.teal-accent {
+    color: <span class="string">#39e6cf</span>;
+}
+
+.teal-accent:hover {
+    color: <span class="string">#5ff5e0</span>;
+    filter: drop-shadow(<span class="number">0 0 6px</span> rgba(<span class="number">57,230,207,0.6</span>));
+}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 切换界面
+        function showScreen(screen) {
+            const activation = document.getElementById('activation-prototype');
+            const main = document.getElementById('main-prototype');
+            const buttons = document.querySelectorAll('.switch-btn');
+
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            if (screen === 'activation') {
+                activation.style.display = 'block';
+                main.style.display = 'none';
+            } else {
+                activation.style.display = 'none';
+                main.style.display = 'block';
+            }
+        }
+
+        // 格式化激活码
+        function formatActivationCode(input) {
+            let value = input.value.replace(/\D/g, '');
+            let formatted = '';
+            for (let i = 0; i < value.length && i < 16; i++) {
+                if (i > 0 && i % 4 === 0) {
+                    formatted += '-';
+                }
+                formatted += value[i];
+            }
+            input.value = formatted;
+        }
+
+        // 模拟激活
+        function simulateActivation() {
+            const input = document.getElementById('demo-activation-code');
+            const message = document.getElementById('demo-activation-message');
+            const button = document.getElementById('demo-activate-button');
+
+            if (input.value.length === 19) {
+                button.disabled = true;
+                button.textContent = '激活中...';
+
+                setTimeout(() => {
+                    message.style.display = 'block';
+                    message.className = 'activation-message success';
+                    message.textContent = '✓ 激活成功! 即将进入主界面...';
+
+                    setTimeout(() => {
+                        showScreen('main');
+                        document.querySelectorAll('.switch-btn')[1].classList.add('active');
+                        document.querySelectorAll('.switch-btn')[0].classList.remove('active');
+                    }, 1500);
+                }, 1500);
+            } else {
+                message.style.display = 'block';
+                message.className = 'activation-message error';
+                message.textContent = '✗ 激活码格式不正确';
+            }
+        }
+
+        // 切换网络模式
+        function switchMode(mode) {
+            const statusText = document.getElementById('status-text-demo');
+            const stopBtn = document.getElementById('btn-stop-link-demo');
+            const bothBtn = document.getElementById('btn-smart-network-demo');
+
+            // 移除激活指示器
+            stopBtn.classList.remove('active-indicator');
+            bothBtn.classList.remove('active-indicator');
+
+            statusText.textContent = '切换中...';
+
+            setTimeout(() => {
+                if (mode === 'external') {
+                    stopBtn.classList.add('active-indicator');
+                    statusText.textContent = '已切换到外网模式';
+                } else {
+                    bothBtn.classList.add('active-indicator');
+                    statusText.textContent = '已切换到双网模式';
+                }
+            }, 1000);
+        }
+
+        // 切换网络接口
+        function toggleInterface(button, interfaceName) {
+            const statusText = document.getElementById('status-text-demo');
+            const interfaceItem = button.closest('.interface-item');
+            const badge = interfaceItem.querySelector('.status-badge');
+
+            const isEnabled = badge.classList.contains('status-connected');
+
+            button.disabled = true;
+            statusText.textContent = `${interfaceName} ${isEnabled ? '禁用' : '启用'}中...`;
+
+            setTimeout(() => {
+                if (isEnabled) {
+                    badge.className = 'status-badge status-disabled';
+                    badge.textContent = '已禁用';
+                    button.textContent = '启用';
+                    button.className = 'control-button enable-button';
+                } else {
+                    badge.className = 'status-badge status-connected';
+                    badge.textContent = '已连接';
+                    button.textContent = '禁用';
+                    button.className = 'control-button disable-button';
+                }
+                button.disabled = false;
+                statusText.textContent = `${interfaceName} 已${isEnabled ? '禁用' : '启用'}`;
+            }, 1000);
+        }
+
+        // 刷新接口列表
+        function refreshInterfaces() {
+            const statusText = document.getElementById('status-text-demo');
+            const icon = event.target.closest('.refresh-button').querySelector('.refresh-icon');
+
+            statusText.textContent = '更新中...';
+            icon.style.animation = 'spin 0.4s ease-in-out';
+
+            setTimeout(() => {
+                statusText.textContent = '已更新';
+                icon.style.animation = '';
+            }, 1000);
+        }
+
+        // 切换分享
+        function toggleShare() {
+            const overlay = document.getElementById('share-overlay-demo');
+            overlay.style.display = overlay.style.display === 'none' ? 'flex' : 'none';
+        }
+    </script>
+</body>
+</html>

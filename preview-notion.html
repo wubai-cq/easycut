@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EasyCut - Notion 风格预览</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            padding: 40px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .preview-section {
+            margin: 40px 0;
+        }
+        .preview-title {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: rgba(0, 0, 0, 0.95);
+            letter-spacing: -0.25px;
+        }
+        .preview-desc {
+            font-size: 14px;
+            color: #615d59;
+            margin-bottom: 24px;
+        }
+        .demo-card {
+            background: white;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+        .demo-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        .demo-button-primary {
+            background: #0075de;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 4px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .demo-button-secondary {
+            background: #f6f5f4;
+            color: rgba(0, 0, 0, 0.95);
+            padding: 8px 16px;
+            border-radius: 4px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .status-pill {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 9999px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.125px;
+        }
+        .status-connected {
+            background: #f2f9ff;
+            color: #097fe8;
+        }
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="font-size: 32px; font-weight: 700; letter-spacing: -1.5px; margin-bottom: 8px;">
+        EasyCut - Notion 风格
+    </h1>
+    <p style="font-size: 16px; color: #615d59; margin-bottom: 40px;">
+        温暖友好、简洁专业的网络管理工具
+    </p>
+
+    <div class="preview-section">
+        <h2 class="preview-title">按钮样式</h2>
+        <p class="preview-desc">Notion 风格的按钮采用微妙的圆角和温暖色调</p>
+        <div class="demo-buttons">
+            <button class="demo-button-primary">主要操作</button>
+            <button class="demo-button-secondary">次要操作</button>
+        </div>
+    </div>
+
+    <div class="preview-section">
+        <h2 class="preview-title">卡片与状态</h2>
+        <p class="preview-desc">超薄边框、多层阴影、药丸状状态徽章</p>
+
+        <div class="demo-card">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <div style="font-size: 15px; font-weight: 600; color: rgba(0,0,0,0.95); margin-bottom: 4px;">
+                        WiFi - 内网
+                    </div>
+                    <div style="font-size: 14px; color: #615d59;">
+                        已连接 • 信号强度: 强
+                    </div>
+                </div>
+                <div style="display: flex; gap: 8px; align-items: center;">
+                    <span class="status-pill status-connected">已连接</span>
+                    <button class="demo-button-secondary" style="font-size: 14px; padding: 6px 12px;">禁用</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-card">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <div style="font-size: 15px; font-weight: 600; color: rgba(0,0,0,0.95); margin-bottom: 4px;">
+                        以太网 - 外网
+                    </div>
+                    <div style="font-size: 14px; color: #615d59;">
+                        已禁用
+                    </div>
+                </div>
+                <div style="display: flex; gap: 8px; align-items: center;">
+                    <span class="status-pill status-warning">已禁用</span>
+                    <button class="demo-button-primary" style="font-size: 14px; padding: 6px 12px;">启用</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="preview-section">
+        <h2 class="preview-title">颜色系统</h2>
+        <p class="preview-desc">温暖的中性色调，搭配 Notion Blue 强调色</p>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px;">
+            <div>
+                <div style="width: 100%; height: 60px; background: #ffffff; border: 1px solid rgba(0,0,0,0.1); border-radius: 4px;"></div>
+                <div style="margin-top: 8px; font-size: 12px; color: #615d59;">纯白色 #ffffff</div>
+            </div>
+            <div>
+                <div style="width: 100%; height: 60px; background: #f6f5f4; border-radius: 4px;"></div>
+                <div style="margin-top: 8px; font-size: 12px; color: #615d59;">温暖白 #f6f5f4</div>
+            </div>
+            <div>
+                <div style="width: 100%; height: 60px; background: #0075de; border-radius: 4px;"></div>
+                <div style="margin-top: 8px; font-size: 12px; color: #615d59;">Notion Blue #0075de</div>
+            </div>
+            <div>
+                <div style="width: 100%; height: 60px; background: rgba(0,0,0,0.95); border-radius: 4px;"></div>
+                <div style="margin-top: 8px; font-size: 12px; color: #615d59;">近黑色 rgba(0,0,0,0.95)</div>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-top: 60px; padding: 24px; background: #f6f5f4; border-radius: 12px;">
+        <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 12px;">设计特点总结</h3>
+        <ul style="font-size: 14px; color: #615d59; line-height: 1.8; margin-left: 20px;">
+            <li>温暖的白色背景，降低用户心理压力</li>
+            <li>超薄边框 (1px, 10% 透明度)，轻量不抢眼</li>
+            <li>多层阴影系统，创造自然深度感</li>
+            <li>Notion Blue (#0075de) 作为唯一强调色</li>
+            <li>药丸状徽章 (9999px 圆角) 用于状态指示</li>
+            <li>4px 微圆角用于按钮和输入框</li>
+            <li>12px 标准圆角用于卡片容器</li>
+        </ul>
+    </div>
+</body>
+</html>
