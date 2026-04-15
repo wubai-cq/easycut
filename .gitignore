@@ -101,3 +101,10 @@ release/
 .DS_Store
 Thumbs.db
 
+# Custom ignore rules
+generate-test-code.js
+*.bat
+*.md
+*.png
+*.ico
+
