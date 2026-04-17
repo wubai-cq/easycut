@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EasyCut - 优雅的网络管理工具</title>
+    <link rel="stylesheet" href="styles-premium.css">
+</head>
+<body>
+    <!-- 主应用界面 -->
+    <div class="app-container">
+        <!-- 顶部导航栏 -->
+        <header class="app-header">
+            <div class="header-brand">
+                <div class="brand-icon">⚞</div>
+                <div class="brand-info">
+                    <h1 class="brand-title">EasyCut</h1>
+                    <p class="brand-subtitle">Network Management</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="icon-btn icon-btn-settings" title="设置">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M12 1v6m0 6v6m4.22-10.22l-4.24-4.24M17.66 17.66l4.24 4.24m-18.8-9.9h6m-6 0H2.1m16.12 4.24l4.24 4.24M6.34 17.66l-4.24 4.24"></path>
+                    </svg>
+                </button>
+                <button class="icon-btn icon-btn-share" title="分享">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="18" cy="5" r="3"></circle>
+                        <circle cx="6" cy="12" r="3"></circle>
+                        <circle cx="18" cy="19" r="3"></circle>
+                        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- 网络状态卡片 -->
+        <div class="status-section">
+            <div class="status-card" id="status-card">
+                <div class="status-header">
+                    <div class="status-icon-wrapper">
+                        <span class="status-icon">🌐</span>
+                    </div>
+                    <div class="status-info">
+                        <div class="status-label">网络连接</div>
+                        <div class="status-badge status-badge-connected">
+                            <span class="status-dot-live"></span>
+                            已连接
+                        </div>
+                    </div>
+                </div>
+
+                <div class="status-main-value" id="status-main">已连接</div>
+
+                <div class="status-mode-display">
+                    <div class="mode-tag">
+                        <span class="mode-label">当前模式</span>
+                        <span class="mode-value" id="current-mode">同时启用</span>
+                    </div>
+                    <div class="network-tags">
+                        <span class="network-tag active">
+                            <span class="tag-dot">✓</span> 外网
+                        </span>
+                        <span class="network-tag active">
+                            <span class="tag-dot">✓</span> 内网
+                        </span>
+                    </div>
+                </div>
+
+                <div class="status-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">延迟</span>
+                        <span class="stat-value">28ms</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">下载速度</span>
+                        <span class="stat-value">95 Mbps</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">信号强度</span>
+                        <span class="stat-value">强</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 网络模式选择区域 -->
+        <div class="mode-selection-section">
+            <div class="section-header">
+                <h2 class="section-title">网络模式</h2>
+                <span class="section-hint">点击选择切换</span>
+            </div>
+
+            <div class="mode-cards-container">
+                <!-- 外网模式卡片 -->
+                <div class="mode-card mode-card-external" data-mode="external">
+                    <div class="mode-card-header">
+                        <span class="mode-card-icon">🌍</span>
+                        <span class="mode-card-badge">External</span>
+                    </div>
+                    <h3 class="mode-card-title">启用外网</h3>
+                    <p class="mode-card-desc">仅使用外部网络连接</p>
+                    <div class="mode-card-indicator">
+                        <div class="indicator-circle"></div>
+                    </div>
+                </div>
+
+                <!-- 内网模式卡片 -->
+                <div class="mode-card mode-card-internal" data-mode="internal">
+                    <div class="mode-card-header">
+                        <span class="mode-card-icon">🏢</span>
+                        <span class="mode-card-badge">Internal</span>
+                    </div>
+                    <h3 class="mode-card-title">启用内网</h3>
+                    <p class="mode-card-desc">仅使用内部网络连接</p>
+                    <div class="mode-card-indicator">
+                        <div class="indicator-circle"></div>
+                    </div>
+                </div>
+
+                <!-- 双网模式卡片 -->
+                <div class="mode-card mode-card-both active" data-mode="both">
+                    <div class="mode-card-header">
+                        <span class="mode-card-icon">⚡</span>
+                        <span class="mode-card-badge">Dual</span>
+                    </div>
+                    <h3 class="mode-card-title">同时启用</h3>
+                    <p class="mode-card-desc">同时连接两个网络</p>
+                    <div class="mode-card-indicator">
+                        <div class="indicator-circle"></div>
+                        <span class="indicator-text">●</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 网络接口管理 -->
+        <div class="interfaces-section">
+            <div class="section-header">
+                <h2 class="section-title">网络接口</h2>
+                <button class="refresh-btn" id="refresh-interfaces" title="刷新">
+                    🔄
+                </button>
+            </div>
+
+            <div class="interfaces-list" id="interfaces-list">
+                <div class="interface-item interface-item-active">
+                    <div class="interface-header">
+                        <div class="interface-icon">📶</div>
+                        <div class="interface-info">
+                            <div class="interface-name">WiFi 网络</div>
+                            <div class="interface-status">已连接 • 信号强</div>
+                        </div>
+                    </div>
+                    <div class="interface-signal">
+                        <div class="signal-bar" style="width: 100%;"></div>
+                    </div>
+                    <button class="btn-status-toggle btn-disable">禁用</button>
+                </div>
+
+                <div class="interface-item">
+                    <div class="interface-header">
+                        <div class="interface-icon">🔌</div>
+                        <div class="interface-info">
+                            <div class="interface-name">以太网</div>
+                            <div class="interface-status">已禁用</div>
+                        </div>
+                    </div>
+                    <div class="interface-signal">
+                        <div class="signal-bar" style="width: 0%;"></div>
+                    </div>
+                    <button class="btn-status-toggle btn-enable">启用</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部状态栏 -->
+        <footer class="app-footer">
+            <div class="footer-status">
+                <span class="footer-status-dot">●</span>
+                <div class="footer-status-text">
+                    <div class="footer-status-main">网络连接正常</div>
+                    <div class="footer-status-detail">外网 • 内网 • 双向传输</div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="renderer-premium.js"></script>
+</body>
+</html>

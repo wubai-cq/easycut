@@ -30,7 +30,27 @@ contextBridge.exposeInMainWorld('networkAPI', {
   checkActivationStatus: () => ipcRenderer.invoke('check-activation-status'),
   activateApp: (activationCode) => ipcRenderer.invoke('activate-app', activationCode),
   validateActivationCode: (code) => ipcRenderer.invoke('validate-activation-code', code),
-  resetActivation: () => ipcRenderer.invoke('reset-activation'),
-  
+  resetActivation: () => ipcRenderer.invoke('reset-activation')
+});
+
+// 窗口控制API - 暴露为独立对象
+contextBridge.exposeInMainWorld('windowControl', {
+  minimize: () => ipcRenderer.send('window-minimize'),
+  close: () => ipcRenderer.send('window-close')
+});
+
+// 网络模式变化监听API
+contextBridge.exposeInMainWorld('networkModeListener', {
+  onModeChanged: (callback) => {
+    ipcRenderer.on('network-mode-changed', (event, mode) => callback(mode));
+  },
+  removeListener: () => {
+    ipcRenderer.removeAllListeners('network-mode-changed');
+  },
+  onWindowShow: (callback) => {
+    // 先移除旧的监听器，避免重复添加
+    ipcRenderer.removeAllListeners('window-show');
+    ipcRenderer.on('window-show', () => callback());
+  }
 });
 

@@ -6,6 +6,8 @@ let statusText;
 let adminWarning;
 let shareButton;
 let shareOverlay;
+let interfacesButton;
+let interfacesOverlay;
 
 // 激活界面相关元素
 let activationScreen;
@@ -14,24 +16,39 @@ let activationCodeInput;
 let activateButton;
 let activationMessage;
 
+// 执行最小化操作（先清除hover状态再最小化）
+function doMinimize() {
+    // 在最小化前强制清除所有按钮的hover状态
+    document.querySelectorAll('.window-btn').forEach(btn => {
+        btn.classList.add('no-hover');
+        btn.dispatchEvent(new MouseEvent('mouseleave', { bubbles: true }));
+    });
+    
+    // 立即执行最小化
+    if (window.windowControl) {
+        window.windowControl.minimize();
+    }
+}
+
 // 更新状态栏
 function updateStatus(message, type = 'info') {
     if (!statusText) {
         console.warn('[前端] statusText 元素未初始化');
         return;
     }
-    
+
     statusText.textContent = message;
-    
-    // 根据类型设置颜色
+
+    // 根据类型设置颜色（使用CSS类）
+    statusText.classList.remove('success', 'error', 'warning');
     if (type === 'success') {
-        statusText.style.color = '#28a745';
+        statusText.style.color = '#39e6cf';
     } else if (type === 'error') {
         statusText.style.color = '#dc3545';
     } else if (type === 'warning') {
         statusText.style.color = '#ffc107';
     } else {
-        statusText.style.color = '#6c757d';
+        statusText.style.color = '#fff';
     }
 }
 
@@ -97,6 +114,8 @@ async function initNetworkState() {
                 updateActionCards('both');
             } else if (externalEnabled) {
                 updateActionCards('external');
+            } else if (internalEnabled) {
+                updateActionCards('internal');
             }
 
             // 更新状态标签
@@ -112,64 +131,71 @@ function updateStatusBadges(interfaces) {
     const badgeExternal = document.getElementById('badge-external');
     const badgeInternal = document.getElementById('badge-internal');
     const networkStatus = document.getElementById('network-status');
-    
+    const footerSub = document.getElementById('footer-sub');
+
     // 查找外网接口
-    const waiwang = interfaces.find(iface => 
-        iface.name.toLowerCase().includes('waiwang') || 
-        iface.name.toLowerCase().includes('wifi') || 
+    const waiwang = interfaces.find(iface =>
+        iface.name.toLowerCase().includes('waiwang') ||
+        iface.name.toLowerCase().includes('wifi') ||
         iface.name.toLowerCase().includes('wireless') ||
         iface.name.toLowerCase().includes('wi-fi')
     );
-    
+
     // 查找内网接口
-    const neiwang = interfaces.find(iface => 
-        iface.name.toLowerCase().includes('neiwang') || 
+    const neiwang = interfaces.find(iface =>
+        iface.name.toLowerCase().includes('neiwang') ||
         iface.name.toLowerCase().includes('ethernet') ||
         iface.name.toLowerCase().includes('lan')
     );
-    
+
+    let externalConnected = false;
+    let internalConnected = false;
+
     // 更新外网状态
     if (badgeExternal) {
         if (waiwang) {
             if (waiwang.status === 'enabled' && waiwang.state === 'connected') {
-                badgeExternal.textContent = '外网: 启用';
-                badgeExternal.classList.add('active');
+                badgeExternal.textContent = '✓ 外网：启用';
+                externalConnected = true;
             } else if (waiwang.status === 'enabled') {
-                badgeExternal.textContent = '外网: 已启用';
-                badgeExternal.classList.add('active');
+                badgeExternal.textContent = '✓ 外网：已启用';
+                externalConnected = true;
             } else {
-                badgeExternal.textContent = '外网: 已禁用';
-                badgeExternal.classList.remove('active');
+                badgeExternal.textContent = '✗ 外网：已禁用';
             }
         } else {
-            badgeExternal.textContent = '外网: 未检测到';
-            badgeExternal.classList.remove('active');
+            badgeExternal.textContent = '✗ 外网：未检测到';
         }
     }
-    
+
     // 更新内网状态
     if (badgeInternal) {
         if (neiwang) {
             if (neiwang.status === 'enabled' && neiwang.state === 'connected') {
-                badgeInternal.textContent = '内网: 启用';
-                badgeInternal.classList.add('active');
+                badgeInternal.textContent = '✓ 内网：启用';
+                internalConnected = true;
             } else if (neiwang.status === 'enabled') {
-                badgeInternal.textContent = '内网: 已启用';
-                badgeInternal.classList.add('active');
+                badgeInternal.textContent = '✓ 内网：已启用';
+                internalConnected = true;
             } else {
-                badgeInternal.textContent = '内网: 已禁用';
-                badgeInternal.classList.remove('active');
+                badgeInternal.textContent = '✗ 内网：已禁用';
             }
         } else {
-            badgeInternal.textContent = '内网: 未检测到';
-            badgeInternal.classList.remove('active');
+            badgeInternal.textContent = '✗ 内网：未检测到';
         }
     }
-    
+
     // 更新网络状态文字
     if (networkStatus) {
         const hasConnected = interfaces.some(iface => iface.state === 'connected');
         networkStatus.textContent = hasConnected ? '已连接' : '未连接';
+    }
+
+    // 更新底部状态栏文字
+    if (footerSub) {
+        const externalText = externalConnected ? '外网已连接' : '外网已禁用';
+        const internalText = internalConnected ? '内网已连接' : '内网已禁用';
+        footerSub.textContent = `${externalText} • ${internalText}`;
     }
 }
 
@@ -233,40 +259,40 @@ async function checkConnectivityAndShowIndicator() {
 function disableAllButtons(disabled) {
     // 模式切换按钮通过 CSS 类控制状态
     const cardExternal = document.getElementById('card-external');
+    const cardInternal = document.getElementById('card-internal');
     const cardBoth = document.getElementById('card-both');
-    const statusRefresh = document.querySelector('.status-refresh');
+    const refreshBtn = document.getElementById('refresh-btn');
 
     if (cardExternal) cardExternal.style.pointerEvents = disabled ? 'none' : 'auto';
+    if (cardInternal) cardInternal.style.pointerEvents = disabled ? 'none' : 'auto';
     if (cardBoth) cardBoth.style.pointerEvents = disabled ? 'none' : 'auto';
-    if (statusRefresh) statusRefresh.style.pointerEvents = disabled ? 'none' : 'auto';
+    if (refreshBtn) refreshBtn.style.pointerEvents = disabled ? 'none' : 'auto';
 }
 
 // 更新操作卡片选中状态
 function updateActionCards(mode) {
     const cardExternal = document.getElementById('card-external');
+    const cardInternal = document.getElementById('card-internal');
     const cardBoth = document.getElementById('card-both');
 
     // 重置所有卡片状态
     if (cardExternal) {
         cardExternal.classList.remove('active');
-        const check = cardExternal.querySelector('.action-card-check');
-        if (check) check.style.display = 'none';
+    }
+    if (cardInternal) {
+        cardInternal.classList.remove('active');
     }
     if (cardBoth) {
         cardBoth.classList.remove('active');
-        const check = cardBoth.querySelector('.action-card-check');
-        if (check) check.style.display = 'none';
     }
 
     // 根据当前模式设置选中状态
     if (mode === 'external' && cardExternal) {
         cardExternal.classList.add('active');
-        const check = cardExternal.querySelector('.action-card-check');
-        if (check) check.style.display = 'flex';
+    } else if (mode === 'internal' && cardInternal) {
+        cardInternal.classList.add('active');
     } else if (mode === 'both' && cardBoth) {
         cardBoth.classList.add('active');
-        const check = cardBoth.querySelector('.action-card-check');
-        if (check) check.style.display = 'flex';
     }
 }
 
@@ -287,19 +313,17 @@ async function handleRefreshClick() {
 
         console.log('[前端] ping baidu.com 结果:', canPingBaidu);
 
-        // 只更新当前模式显示，不实际切换网络
+        // 根据ping结果更新当前模式显示
         if (canPingBaidu) {
             // 能 ping 通，显示外网模式
-            if (currentModeText) {
-                currentModeText.textContent = '外网模式';
-            }
+            updateActionCards('external');
+            if (currentModeText) currentModeText.textContent = '外网模式';
             updateStatus('检测到外网连通', 'success');
         } else {
             // ping 不通，显示双网模式
-            if (currentModeText) {
-                currentModeText.textContent = '双网模式';
-            }
-            updateStatus('外网不通', 'warning');
+            updateActionCards('both');
+            if (currentModeText) currentModeText.textContent = '双网模式';
+            updateStatus('外网不通，切换双网模式', 'warning');
         }
 
     } catch (error) {
@@ -347,18 +371,23 @@ async function stopLink() {
 async function startLink() {
     console.log('[前端] 内网优先按钮被点击');
     disableAllButtons(true);
-    
+
     try {
         updateStatus('正在设置内网优先...', 'info');
         console.log('[前端] 调用 switchToNeiwang API');
-        
+
         const result = await window.networkAPI.switchToNeiwang();
         console.log('[前端] switchToNeiwang 返回结果:', result);
-        
+
         if (result.success) {
             showNotification(result.message, 'success');
+            updateActionCards('internal');
+            // 更新当前模式文字
+            const currentModeText = document.getElementById('current-mode');
+            if (currentModeText) currentModeText.textContent = '内网模式';
+            // 延迟后恢复按钮
             setTimeout(() => {
-                loadInterfaces();
+                disableAllButtons(false);
             }, 1500);
         } else {
             throw new Error(result.error);
@@ -415,17 +444,115 @@ async function checkAdminPrivileges() {
 }
 
 // 页面加载完成后初始化
+// 监听窗口显示事件，刷新网络状态
+    if (window.networkModeListener) {
+        window.networkModeListener.onWindowShow(() => {
+            console.log('[前端] 窗口显示，刷新网络状态');
+            resetWindowButtonsHover();
+            handleRefreshClick();
+        });
+    }
+
 window.addEventListener('DOMContentLoaded', () => {
+    // 绑定窗口控制按钮
+    const btnMinimize = document.getElementById('btn-minimize');
+    const btnClose = document.getElementById('btn-close');
+    
+    console.log('[前端] 窗口控制按钮:', { btnMinimize, btnClose, windowControl: !!window.windowControl });
+    
+    if (btnMinimize) {
+        btnMinimize.addEventListener('click', (e) => {
+            e.stopPropagation();
+            console.log('[前端] 最小化按钮被点击');
+            doMinimize();
+        });
+    } else {
+        console.warn('[前端] btn-minimize 元素未找到');
+    }
+    
+    if (btnClose) {
+        btnClose.addEventListener('click', (e) => {
+            e.stopPropagation();
+            console.log('[前端] 关闭按钮被点击');
+            if (window.windowControl) {
+                window.windowControl.close();
+            } else {
+                console.error('[前端] windowControl API 不可用');
+            }
+        });
+    } else {
+        console.warn('[前端] btn-close 元素未找到');
+    }
     console.log('[前端] DOM 加载完成，初始化应用');
+    
+    // 监听主进程的网络模式变化通知
+    if (window.networkModeListener) {
+        window.networkModeListener.onModeChanged((mode) => {
+            console.log('[前端] 收到网络模式变化通知:', mode);
+            updateActionCards(mode);
+            // 同时更新当前模式文字
+            const currentModeText = document.getElementById('current-mode');
+            if (currentModeText) {
+                currentModeText.textContent = mode === 'external' ? '外网模式' : 
+                                               mode === 'internal' ? '内网模式' : '双网模式';
+            }
+        });
+    }
     
     // 获取 DOM 元素
     // 注意：按钮事件通过 HTML 内联的 onclick 绑定
     // 这里只获取需要动态更新的元素
-    statusText = document.getElementById('status-text');
+    statusText = document.querySelector('.footer-main');
     adminWarning = document.getElementById('admin-warning');
     shareButton = document.getElementById('btn-share');
     shareOverlay = document.getElementById('share-overlay');
+    interfacesButton = document.getElementById('btn-interfaces');
+    interfacesOverlay = document.getElementById('interfaces-overlay');
     
+    // 网络接口按钮点击事件
+    if (interfacesButton && interfacesOverlay) {
+        interfacesButton.addEventListener('click', async (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // 显示网络接口覆盖层
+            interfacesOverlay.style.display = 'flex';
+            
+            // 重置窗口按钮hover状态
+            resetWindowButtonsHover();
+            
+            // 加载网络接口列表
+            await loadInterfacesList();
+            
+            // 重新绑定网络接口界面中的窗口控制按钮
+            const interfacesMinimize = interfacesOverlay.querySelector('#btn-minimize');
+            const interfacesClose = interfacesOverlay.querySelector('#btn-close');
+            
+            if (interfacesMinimize && window.windowControl) {
+                interfacesMinimize.onclick = (e) => {
+                    e.stopPropagation();
+                    doMinimize();
+                };
+            }
+            
+            if (interfacesClose && window.windowControl) {
+                interfacesClose.onclick = (e) => {
+                    e.stopPropagation();
+                    window.windowControl.close();
+                };
+            }
+        });
+        
+        // 点击内容区域关闭网络接口界面
+        const interfacesContent = interfacesOverlay.querySelector('.interfaces-content');
+        if (interfacesContent) {
+            interfacesContent.addEventListener('click', () => {
+                interfacesOverlay.style.display = 'none';
+                if (mainApp) mainApp.style.display = 'flex';
+            });
+        }
+    }
+
     // 模式切换按钮通过 HTML onclick 绑定，无需在这里绑定
     // 刷新按钮也在状态卡片中，通过 HTML onclick 绑定
 
@@ -433,19 +560,47 @@ window.addEventListener('DOMContentLoaded', () => {
     if (shareButton && shareOverlay) {
         shareButton.addEventListener('click', (e) => {
             e.preventDefault();
-            // 隐藏主界面，仅显示一段文字
-            if (mainApp) mainApp.style.display = 'none';
-            if (activationScreen) activationScreen.style.display = 'none';
+            e.stopPropagation();
+            // 直接显示分享覆盖层（现在包含顶部工具栏）
             shareOverlay.style.display = 'flex';
+            
+            // 重置窗口按钮hover状态
+            resetWindowButtonsHover();
+            
+            // 重新绑定分享界面中的窗口控制按钮
+            const shareMinimize = shareOverlay.querySelector('#btn-minimize');
+            const shareClose = shareOverlay.querySelector('#btn-close');
+            
+            if (shareMinimize && window.windowControl) {
+                shareMinimize.onclick = (e) => {
+                    e.stopPropagation();
+                    doMinimize();
+                };
+            }
+            
+            if (shareClose && window.windowControl) {
+                shareClose.onclick = (e) => {
+                    e.stopPropagation();
+                    window.windowControl.close();
+                };
+            }
         });
         // 点击覆盖层恢复主界面
-        shareOverlay.addEventListener('click', () => {
-            shareOverlay.style.display = 'none';
-            if (activationScreen && (!mainApp || mainApp.style.display === 'none')) {
-                // 若未激活则显示激活界面
-                const status = window.networkAPI ? null : null;
+        const shareContent = shareOverlay.querySelector('.share-content');
+        if (shareContent) {
+            shareContent.addEventListener('click', () => {
+                shareOverlay.style.display = 'none';
+                if (mainApp) mainApp.style.display = 'flex';
+            });
+        }
+        
+        // 点击分享覆盖层恢复主界面（排除header区域）
+        shareOverlay.addEventListener('click', (e) => {
+            // 只有当点击的不是header时才关闭
+            if (!e.target.closest('.header')) {
+                shareOverlay.style.display = 'none';
+                if (mainApp) mainApp.style.display = 'flex';
             }
-            if (mainApp) mainApp.style.display = 'flex';
         });
         // Esc 关闭
         document.addEventListener('keydown', (evt) => {
@@ -486,10 +641,14 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // 绑定操作卡片点击事件
     const cardExternal = document.getElementById('card-external');
+    const cardInternal = document.getElementById('card-internal');
     const cardBoth = document.getElementById('card-both');
 
     if (cardExternal) {
         cardExternal.addEventListener('click', stopLink);
+    }
+    if (cardInternal) {
+        cardInternal.addEventListener('click', startLink);
     }
     if (cardBoth) {
         cardBoth.addEventListener('click', smartNetworkManagement);
@@ -628,6 +787,24 @@ function initActivationScreen() {
         }
     });
     
+    // 绑定激活界面中的窗口控制按钮
+    const activationMinimize = activationScreen.querySelector('#btn-minimize');
+    const activationClose = activationScreen.querySelector('#btn-close');
+    
+    if (activationMinimize && window.windowControl) {
+        activationMinimize.addEventListener('click', (e) => {
+            e.stopPropagation();
+            doMinimize();
+        });
+    }
+    
+    if (activationClose && window.windowControl) {
+        activationClose.addEventListener('click', (e) => {
+            e.stopPropagation();
+            window.windowControl.close();
+        });
+    }
+    
     console.log('[前端] 激活界面初始化完成');
 }
 
@@ -666,11 +843,32 @@ function showActivationScreen() {
         console.log('[前端] 激活界面已显示');
         console.log('激活界面显示状态:', activationScreen.style.display);
         console.log('主应用显示状态:', mainApp.style.display);
+        
+        // 重置窗口按钮hover状态
+        resetWindowButtonsHover();
     } else {
         console.error('[前端] 无法显示激活界面：元素未找到');
         console.log('activationScreen存在:', !!activationScreen);
         console.log('mainApp存在:', !!mainApp);
     }
+}
+
+// 重置窗口控制按钮的hover状态
+function resetWindowButtonsHover() {
+    // 模拟鼠标离开所有按钮，强制清除hover状态
+    document.querySelectorAll('.window-btn').forEach(btn => {
+        // 触发mouseleave事件
+        btn.dispatchEvent(new MouseEvent('mouseleave', { bubbles: true }));
+        // 同时添加临时class确保背景透明
+        btn.classList.add('no-hover');
+    });
+
+    // 延迟移除临时class，给浏览器足够时间重置hover状态
+    setTimeout(() => {
+        document.querySelectorAll('.window-btn').forEach(btn => {
+            btn.classList.remove('no-hover');
+        });
+    }, 100);
 }
 
 // 显示主应用
@@ -679,5 +877,88 @@ function showMainApp() {
         activationScreen.style.display = 'none';
         mainApp.style.display = 'flex';
         console.log('[前端] 主应用已显示');
+        
+        // 重置窗口按钮hover状态
+        resetWindowButtonsHover();
+        
+        // 重新绑定主界面的窗口控制按钮
+        const mainMinimize = mainApp.querySelector('#btn-minimize');
+        const mainClose = mainApp.querySelector('#btn-close');
+        
+        if (mainMinimize && window.windowControl) {
+            mainMinimize.onclick = (e) => {
+                e.stopPropagation();
+                console.log('[前端] 主界面最小化按钮被点击');
+                doMinimize();
+            };
+        }
+        
+        if (mainClose && window.windowControl) {
+            mainClose.onclick = (e) => {
+                e.stopPropagation();
+                console.log('[前端] 主界面关闭按钮被点击');
+                window.windowControl.close();
+            };
+        }
+    }
+}
+// 加载网络接口列表
+async function loadInterfacesList() {
+    const interfacesList = document.getElementById('interfaces-list');
+    if (!interfacesList) return;
+    
+    // 清空列表
+    interfacesList.innerHTML = '';
+    
+    try {
+        const result = await window.networkAPI.getInterfaces();
+        
+        if (result.success) {
+            const interfaces = result.data;
+            
+            if (interfaces.length === 0) {
+                interfacesList.innerHTML = '<div style="text-align: center; color: #8a8d9e; padding: 20px;">未检测到网络接口</div>';
+                return;
+            }
+            
+            interfaces.forEach(iface => {
+                const isConnected = iface.state === 'connected' && iface.status === 'enabled';
+                const item = document.createElement('div');
+                item.className = 'interface-item' + (isConnected ? ' active' : '');
+                
+                // 根据接口类型选择图标
+                let icon = '🔌';
+                const nameLower = iface.name.toLowerCase();
+                if (nameLower.includes('wifi') || nameLower.includes('wireless') || nameLower.includes('wi-fi') || nameLower.includes('waiwang')) {
+                    icon = '📶';
+                } else if (nameLower.includes('ethernet') || nameLower.includes('lan') || nameLower.includes('neiwang')) {
+                    icon = '🔌';
+                }
+                
+                // 生成信号条
+                const signalStrength = isConnected ? 4 : 1;
+                let signalBars = '';
+                for (let i = 1; i <= 4; i++) {
+                    const height = 4 + i * 3;
+                    const active = i <= signalStrength ? ' active' : '';
+                    signalBars += '<div class="signal-bar' + active + '" style="height: ' + height + 'px;"></div>';
+                }
+                
+                item.innerHTML = 
+                    '<div class="interface-icon">' + icon + '</div>' +
+                    '<div class="interface-info">' +
+                        '<div class="interface-name">' + iface.name + '</div>' +
+                        '<div class="interface-status' + (isConnected ? ' connected' : '') + '">' + (isConnected ? '已连接' : (iface.status === 'enabled' ? '已启用' : '已禁用')) + '</div>' +
+                    '</div>' +
+                    '<div class="interface-signal">' + signalBars + '</div>';
+                
+                interfacesList.appendChild(item);
+            });
+        } else {
+            interfacesList.innerHTML = '<div style="text-align: center; color: #8a8d9e; padding: 20px;">加载失败</div>';
+        }
+    } catch (error) {
+        console.error('[前端] 加载网络接口列表失败:', error);
+        interfacesList.innerHTML = '<div style="text-align: center; color: #8a8d9e; padding: 20px;">加载失败</div>';
     }
 }

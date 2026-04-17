@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, Tray, Menu, nativeImage } = require('electron');
 const path = require('path');
 const { exec, spawn } = require('child_process');
 const util = require('util');
@@ -177,15 +177,19 @@ function execNetsh(args) {
 }
 
 let mainWindow;
+let tray = null;
+let isQuitting = false;
 
 // 创建主窗口
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 380,
-    height: 650,
+    width: 400,
+    height: 710,
     resizable: false,
     maximizable: false,
-    frame: true,
+    frame: false,
+    transparent: true,
+    backgroundColor: '#00000000',
     autoHideMenuBar: true,
     title: 'EasyCut',
     webPreferences: {
@@ -201,6 +205,13 @@ function createWindow() {
   mainWindow.setMenu(null);
 
   mainWindow.loadFile('index.html');
+  
+  // 强制设置任务栏图标（Windows）
+  if (process.platform === 'win32') {
+    mainWindow.once('ready-to-show', () => {
+      mainWindow.setIcon(path.join(__dirname, 'icon.ico'));
+    });
+  }
   
   // 设置窗口标题
   mainWindow.setTitle('EasyCut');
@@ -231,6 +242,14 @@ function createWindow() {
     }
   });
 
+  mainWindow.on('close', (event) => {
+    // 如果不是真正退出，则隐藏窗口
+    if (!isQuitting) {
+      event.preventDefault();
+      mainWindow.hide();
+    }
+  });
+  
   mainWindow.on('closed', function () {
     mainWindow = null;
   });
@@ -250,16 +269,126 @@ app.setAppUserModelId('com.easycut.app');
 app.commandLine.appendSwitch('disable-features', 'VizDisplayCompositor');
 
 // 当  完成初始化时创建窗口
+ipcMain.on('window-minimize', (event) => {
+  const webContents = event.sender;
+  const win = BrowserWindow.fromWebContents(webContents);
+  if (win) {
+    win.minimize();
+  }
+});
+
+ipcMain.on('window-close', (event) => {
+  const webContents = event.sender;
+  const win = BrowserWindow.fromWebContents(webContents);
+  if (win) {
+    win.hide(); // 隐藏窗口而不是关闭
+  }
+});
+
+// 真正退出应用
+ipcMain.on('window-quit', () => {
+  isQuitting = true;
+  app.quit();
+});
+
+// 创建系统托盘
+function createTray() {
+  // 创建托盘图标
+  const iconPath = path.join(__dirname, 'icon.ico');
+  const trayIcon = nativeImage.createFromPath(iconPath);
+  
+  tray = new Tray(trayIcon);
+  tray.setToolTip('EasyCut - 网络切换工具');
+  
+  // 创建右键菜单
+  const contextMenu = Menu.buildFromTemplate([
+    {
+      label: '启用外网',
+      click: async () => {
+        try {
+          await switchToWaiwang();
+          console.log('[托盘] 已切换到外网模式');
+          // 通知渲染进程更新UI
+          if (mainWindow && mainWindow.webContents) {
+            mainWindow.webContents.send('network-mode-changed', 'external');
+          }
+        } catch (err) {
+          console.error('[托盘] 切换外网失败:', err);
+        }
+      }
+    },
+    {
+      label: '同时启用',
+      click: async () => {
+        try {
+          await enableBothNetworks();
+          console.log('[托盘] 已切换到双网模式');
+          // 通知渲染进程更新UI
+          if (mainWindow && mainWindow.webContents) {
+            mainWindow.webContents.send('network-mode-changed', 'both');
+          }
+        } catch (err) {
+          console.error('[托盘] 切换双网失败:', err);
+        }
+      }
+    },
+    { type: 'separator' },
+    {
+      label: '显示窗口',
+      click: () => {
+        if (mainWindow) {
+          mainWindow.show();
+          mainWindow.focus();
+          // 通知渲染进程刷新状态
+          mainWindow.webContents.send('window-show');
+        }
+      }
+    },
+    { type: 'separator' },
+    {
+      label: '退出应用',
+      click: () => {
+        isQuitting = true;
+        app.quit();
+      }
+    }
+  ]);
+  
+  tray.setContextMenu(contextMenu);
+  
+  // 双击托盘图标显示窗口
+  tray.on('double-click', () => {
+    if (mainWindow) {
+      mainWindow.show();
+      mainWindow.focus();
+      // 通知渲染进程刷新状态
+      mainWindow.webContents.send('window-show');
+    }
+  });
+  
+  // 单击也显示窗口（Windows习惯）
+  tray.on('click', () => {
+    if (mainWindow) {
+      mainWindow.show();
+      mainWindow.focus();
+      // 通知渲染进程刷新状态
+      mainWindow.webContents.send('window-show');
+    }
+  });
+}
+
 app.whenReady().then(() => {
   // 检查管理员权限
   exec('net session', (error) => {
     if (error) {
       console.warn('警告：未以管理员身份运行，某些功能可能无法使用');
-      // 不强制退出，让用户看到警告信息
     } else {
       console.log('已确认管理员权限');
     }
   });
+  
+  // 创建系统托盘
+  createTray();
   
   createWindow();
   
@@ -273,10 +402,19 @@ app.whenReady().then(() => {
   });
 });
 
-// 当所有窗口关闭时退出应用
+// 在退出前设置标志
+app.on('before-quit', () => {
+  isQuitting = true;
+});
+
+// 当所有窗口关闭时退出应用（除非是最小化到托盘）
 app.on('window-all-closed', function () {
   stopNetworkMonitor();
-  if (process.platform !== 'darwin') app.quit();
+  // 如果正在退出，才真正退出
+  if (isQuitting || process.platform !== 'win32') {
+    if (tray) tray.destroy();
+    app.quit();
+  }
 });
 
 // 检查是否以管理员身份运行

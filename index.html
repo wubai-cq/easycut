@@ -7,147 +7,219 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- 激活界面 -->
-    <div id="activation-screen" class="activation-screen" style="display: flex !important;">
-        <div class="activation-container">
-            <div class="activation-card">
-                <div class="activation-header">
-                    <div class="activation-logo">
-                        <div class="logo-icon">E</div>
-                    </div>
-                    <h1 class="activation-title">EasyCut</h1>
-                    <p class="activation-subtitle">专业的网络管理工具</p>
+    <div class="app">
+        <!-- 激活界面 -->
+        <div id="activation-screen" class="activation-screen" style="display: flex !important;">
+            <!-- 顶部导航栏 -->
+            <div class="header">
+                <div class="app-title">
+                    <img src="assets/icon.png" alt="EasyCut" class="title-logo" onerror="this.style.display='none'">
+                    <span>EasyCut</span>
                 </div>
-
-                <div class="activation-form">
-                    <div class="input-group">
-                        <div class="input-container">
-                            <div class="input-icon">🔑</div>
-                            <input
-                                type="text"
-                                id="activation-code-input"
-                                class="activation-input"
-                                placeholder="请输入唯一激活码"
-                                maxlength="19"
-                            >
-                        </div>
-                    </div>
-
-                    <button id="activate-button" class="activate-button">
-                        激活许可证
+                <div class="header-actions">
+                    <button id="btn-minimize" class="window-btn minimize-btn" title="最小化">
+                        <svg viewBox="0 0 10 1" width="10" height="1"><rect width="10" height="1" fill="currentColor"/></svg>
                     </button>
-
-                    <div id="activation-message" class="activation-message" style="display: none;"></div>
+                    <button id="btn-close" class="window-btn close-btn" title="关闭">
+                        <svg viewBox="0 0 10 10" width="10" height="10"><path d="M1,1 L9,9 M9,1 L1,9" stroke="currentColor" stroke-width="1.2" fill="none"/></svg>
+                    </button>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <!-- 主应用界面 -->
-    <div id="main-app" class="container" style="display: none !important;">
-        <!-- 顶部标题栏 -->
-        <div class="app-header">
-            <h1 class="app-title">EasyCut</h1>
-            <div class="header-actions">
-                <button id="btn-settings" class="header-icon-btn">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="3"></circle>
-                        <path d="M12 1v6m0 6v6m4.22-10.22l4.24-4.24M6.34 6.34L2.1 2.1m18.8 9.9h-6m-6 0H2.1m16.12 4.24l4.24 4.24M6.34 17.66l-4.24 4.24"></path>
-                    </svg>
-                </button>
-                <button id="btn-share" class="header-icon-btn">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="18" cy="5" r="3"></circle>
-                        <circle cx="6" cy="12" r="3"></circle>
-                        <circle cx="18" cy="19" r="3"></circle>
-                        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
-                        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
-                    </svg>
-                </button>
-            </div>
-        </div>
-
-        <!-- 管理员权限提示 -->
-        <div id="admin-warning" class="warning-box" style="display: none;">
-            ⚠️ 请以管理员身份运行此程序
-        </div>
-
-        <!-- 网络状态卡片 -->
-        <div class="network-status-card">
-            <div class="status-header">
-                <div class="status-header-left">
-                    <div class="status-icon">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#6B8CFF" stroke-width="2">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-                        </svg>
+            <div class="activation-container">
+                <div class="activation-card">
+                    <div class="activation-header">
+                        <div class="activation-logo">
+                            <div class="logo-icon">⚞</div>
+                        </div>
+                        <h1 class="activation-title">EasyCut</h1>
+                        <p class="activation-subtitle">专业的网络管理工具</p>
                     </div>
-                    <span class="status-label">网络状态</span>
-                </div>
-                <button class="refresh-btn" id="refresh-btn" title="刷新网络状态">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <polyline points="23 4 23 10 17 10"></polyline>
-                        <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
-                    </svg>
-                </button>
-            </div>
-            <div class="status-main" id="network-status">已连接</div>
-            <div class="status-mode">当前模式: <span id="current-mode">双网模式</span></div>
-            <div class="status-tags">
-                <span class="status-tag" id="badge-external">外网: 启用</span>
-                <span class="status-tag" id="badge-internal">内网: 启用</span>
-            </div>
-        </div>
 
-        <!-- 操作按钮区域 -->
-        <div class="action-cards">
-            <!-- 启用外网卡片 -->
-            <div class="action-card" id="card-external">
-                <div class="action-card-icon">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="1.5">
-                        <path d="M12 2a10 10 0 1 0 10 10H12V2z"></path>
-                        <path d="M12 2a10 10 0 0 1 10 10"></path>
-                        <path d="M12 2a5 5 0 0 1 5 5h-5V2z"></path>
-                        <circle cx="12" cy="12" r="1"></circle>
-                    </svg>
-                </div>
-                <span class="action-card-text">启用外网</span>
-                <div class="action-card-check" style="display: none;">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6B8CFF" stroke-width="3">
-                        <polyline points="20 6 9 17 4 12"></polyline>
-                    </svg>
-                </div>
-            </div>
+                    <div class="activation-form">
+                        <div class="input-group">
+                            <div class="input-container">
+                                <div class="input-icon">🔑</div>
+                                <input
+                                    type="text"
+                                    id="activation-code-input"
+                                    class="activation-input"
+                                    placeholder="请输入唯一激活码"
+                                    maxlength="19"
+                                >
+                            </div>
+                        </div>
 
-            <!-- 同时启用卡片 -->
-            <div class="action-card" id="card-both">
-                <div class="action-card-icon">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#6B8CFF" stroke-width="1.5">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-                    </svg>
-                </div>
-                <span class="action-card-text">同时启用</span>
-                <div class="action-card-check" style="display: none;">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6B8CFF" stroke-width="3">
-                        <polyline points="20 6 9 17 4 12"></polyline>
-                    </svg>
+                        <button id="activate-button" class="activate-button">
+                            激活许可证
+                        </button>
+
+                        <div id="activation-message" class="activation-message" style="display: none;"></div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- 底部状态栏 -->
-        <div class="bottom-status">
-            <span class="status-dot"></span>
-            <span class="status-text" id="status-text">网络模式 (启用外网)</span>
-        </div>
-    </div>
+        <!-- 主应用界面 -->
+        <div id="main-app" style="display: none !important; width: 100%; height: 100%; flex-direction: column;">
+            <!-- 顶部导航栏 -->
+            <div class="header">
+                <div class="app-title">
+                    <img src="assets/icon.png" alt="EasyCut" class="title-logo" onerror="this.style.display='none'">
+                    <span>EasyCut</span>
+                </div>
+                <div class="header-actions">
+                    <button id="btn-minimize" class="window-btn minimize-btn" title="最小化">
+                        <svg viewBox="0 0 10 1" width="10" height="1"><rect width="10" height="1" fill="currentColor"/></svg>
+                    </button>
+                    <button id="btn-close" class="window-btn close-btn" title="关闭">
+                        <svg viewBox="0 0 10 10" width="10" height="10"><path d="M1,1 L9,9 M9,1 L1,9" stroke="currentColor" stroke-width="1.2" fill="none"/></svg>
+                    </button>
+                </div>
+            </div>
 
-    <!-- 分享覆盖层（二维码 + 文案） -->
-    <div id="share-overlay" class="share-overlay" style="display: none;">
-        <div class="share-wrapper">
-            <img src="assets/icon_wubai.png" alt="分享二维码" class="share-qr">
-            <div class="share-text">公众号500佰<br>欢迎留言 发送EasyCut获取下载链接</div>
+            <!-- 管理员权限提示 -->
+            <div id="admin-warning" class="warning-box" style="display: none;">
+                ⚠️ 请以管理员身份运行此程序
+            </div>
+
+            <!-- 主内容区 -->
+            <div class="content">
+                <!-- 工具栏 (设置和分享) -->
+                <div class="toolbar" style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 20px;">
+                    <div style="display: flex; gap: 12px;">
+                        <button id="btn-interfaces" class="icon-btn" title="网络接口" style="width: 44px; height: 44px; background: rgba(30, 35, 50, 0.8); border: none; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer; color: #fff; transition: background 0.3s;">🔌</button>
+                        <button id="btn-share" class="icon-btn" title="分享" style="width: 44px; height: 44px; background: rgba(30, 35, 50, 0.8); border: none; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer; color: #fff; transition: background 0.3s;">📤</button>
+                    </div>
+                </div>
+                <!-- 网络状态卡片 -->
+                <div class="status-card">
+                    <div class="status-header">
+                        <div class="status-icon">🌐</div>
+                        <div>
+                            <div class="status-title">网络状态</div>
+                        </div>
+                        <button class="refresh-btn" id="refresh-btn" title="刷新">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8a8d9e" stroke-width="2">
+                                <polyline points="23 4 23 10 17 10"></polyline>
+                                <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="status-value" id="network-status">已连接</div>
+
+                    <div class="mode-display">
+                        <div class="mode-label">当前模式</div>
+                        <div class="mode-value" id="current-mode">双网模式</div>
+                    </div>
+
+
+                    <div class="badges">
+                        <div class="badge" id="badge-external">✓ 外网：启用</div>
+                        <div class="badge" id="badge-internal">✓ 内网：启用</div>
+                    </div>
+                </div>
+
+                <!-- 模式选择卡片 -->
+                <div class="modes-container">
+                    <div class="mode-card" id="card-external">
+                        <div class="mode-icon">🛰️</div>
+                        <div class="mode-text">
+                            <div class="mode-title">启用外网</div>
+                            <div class="mode-desc">仅使用外部网络</div>
+                        </div>
+                        <div class="mode-check">✓</div>
+                    </div>
+
+
+                    <div class="mode-card active" id="card-both">
+                        <div class="mode-icon">🌐</div>
+                        <div class="mode-text">
+                            <div class="mode-title">同时启用</div>
+                            <div class="mode-desc">同时连接两个网络</div>
+                        </div>
+                        <div class="mode-check">✓</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 底部状态栏 -->
+            <div class="footer">
+                <div class="status-dot"></div>
+                <div class="footer-text">
+                    <div class="footer-main" id="status-text">网络模式（启用外网）</div>
+                    <div class="footer-sub" id="footer-sub">外网已连接 • 内网已禁用</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 分享覆盖层（二维码 + 文案） -->
+        <div id="share-overlay" class="share-overlay" style="display: none;">
+            <!-- 保留顶部工具栏 -->
+            <div class="header">
+                <div class="app-title">
+                    <img src="assets/icon.png" alt="EasyCut" class="title-logo" onerror="this.style.display='none'">
+                    <span>EasyCut</span>
+                </div>
+                <div class="header-actions">
+                    <button id="btn-minimize" class="window-btn minimize-btn" title="最小化">
+                        <svg viewBox="0 0 10 1" width="10" height="1"><rect width="10" height="1" fill="currentColor"/></svg>
+                    </button>
+                    <button id="btn-close" class="window-btn close-btn" title="关闭">
+                        <svg viewBox="0 0 10 10" width="10" height="10"><path d="M1,1 L9,9 M9,1 L1,9" stroke="currentColor" stroke-width="1.2" fill="none"/></svg>
+                    </button>
+                </div>
+            </div>
+            <!-- 分享内容区 -->
+            <div class="share-content">
+                <div class="share-wrapper">
+                    <img src="assets/icon_wubai.png" alt="分享二维码" class="share-qr">
+                    <div class="share-text">公众号500佰<br>欢迎留言 发送EasyCut获取下载链接</div>
+                </div>
+                <div class="share-intro">
+                    <div class="intro-item">
+                        <span class="intro-label">专注：</span>
+                        <span class="intro-value">AI 编程实战、聊实践踩坑、agent技术</span>
+                    </div>
+                    <div class="intro-item">
+                        <span class="intro-label">提供：</span>
+                        <span class="intro-value">项目私有部署 + AI编程教学 + 定制开发</span>
+                    </div>
+                    <div class="intro-contact">
+                        <span>找我 –> </span>
+                        <span class="contact-name">Auwubai</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 网络接口覆盖层 -->
+        <div id="interfaces-overlay" class="interfaces-overlay" style="display: none;">
+            <!-- 保留顶部工具栏 -->
+            <div class="header">
+                <div class="app-title">
+                    <img src="assets/icon.png" alt="EasyCut" class="title-logo" onerror="this.style.display='none'">
+                    <span>EasyCut</span>
+                </div>
+                <div class="header-actions">
+                    <button id="btn-minimize" class="window-btn minimize-btn" title="最小化">
+                        <svg viewBox="0 0 10 1" width="10" height="1"><rect width="10" height="1" fill="currentColor"/></svg>
+                    </button>
+                    <button id="btn-close" class="window-btn close-btn" title="关闭">
+                        <svg viewBox="0 0 10 10" width="10" height="10"><path d="M1,1 L9,9 M9,1 L1,9" stroke="currentColor" stroke-width="1.2" fill="none"/></svg>
+                    </button>
+                </div>
+            </div>
+            <!-- 网络接口内容区 -->
+            <div class="interfaces-content">
+                <div class="interfaces-header">
+                    <h3 style="font-size: 18px; font-weight: 700; color: #fff; margin: 0;">网络接口</h3>
+                    <span style="font-size: 12px; color: #8a8d9e;">当前可用的网络连接</span>
+                </div>
+                <div class="interfaces-list" id="interfaces-list">
+                    <!-- 网络接口项将通过JavaScript动态添加 -->
+                </div>
+            </div>
         </div>
     </div>
 
