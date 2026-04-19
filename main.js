@@ -41,8 +41,174 @@ if (process.platform === 'win32') {
 
 const execPromise = util.promisify(exec);
 
+// 获取图标路径（兼容开发和打包环境）
+function getIconPath() {
+  if (app.isPackaged) {
+    // 打包后：图标在 resources 目录下
+    return path.join(process.resourcesPath, 'icon.ico');
+  } else {
+    // 开发模式：图标在项目根目录
+    return path.join(__dirname, 'icon.ico');
+  }
+}
+
 // 创建激活管理器实例
 let activationManager = new ActivationManager();
+
+// ==================== 网络适配器配置管理 ====================
+const fs = require('fs');
+const os = require('os');
+
+// 配置文件路径
+const configDir = path.join(os.homedir(), '.easycut');
+const adapterConfigFile = path.join(configDir, 'adapter_config.json');
+
+// 确保配置目录存在
+function ensureConfigDir() {
+  if (!fs.existsSync(configDir)) {
+    fs.mkdirSync(configDir, { recursive: true });
+  }
+}
+
+// 读取适配器配置
+function getAdapterConfig() {
+  try {
+    ensureConfigDir();
+    if (fs.existsSync(adapterConfigFile)) {
+      const data = fs.readFileSync(adapterConfigFile, 'utf8');
+      return JSON.parse(data);
+    }
+  } catch (error) {
+    console.log('读取适配器配置失败:', error.message);
+  }
+  return null;
+}
+
+// 保存适配器配置
+function saveAdapterConfig(config) {
+  try {
+    ensureConfigDir();
+    fs.writeFileSync(adapterConfigFile, JSON.stringify(config, null, 2), 'utf8');
+    console.log('适配器配置已保存:', config);
+    return true;
+  } catch (error) {
+    console.error('保存适配器配置失败:', error.message);
+    return false;
+  }
+}
+
+// 检查适配器是否已配置（检查配置文件）
+function isAdapterConfigured() {
+  const config = getAdapterConfig();
+  if (!config) return false;
+  
+  // 检查配置中是否有有效的内网和外网适配器名称
+  return config.neiwang && config.waiwang && 
+         config.neiwang.trim() !== '' && config.waiwang.trim() !== '';
+}
+
+// 检查实际适配器名称是否正确（检查系统中是否存在 neiwang 和 waiwang）
+async function checkActualAdapters() {
+  try {
+    const interfaces = await getNetworkInterfaces();
+    
+    // 查找名为 "neiwang" 的适配器
+    const neiwangExists = interfaces.some(iface => 
+      iface.name.toLowerCase() === 'neiwang'
+    );
+    
+    // 查找名为 "waiwang" 的适配器
+    const waiwangExists = interfaces.some(iface => 
+      iface.name.toLowerCase() === 'waiwang'
+    );
+    
+    console.log(`[适配器检查] neiwang: ${neiwangExists}, waiwang: ${waiwangExists}`);
+    
+    return {
+      neiwangExists,
+      waiwangExists,
+      bothExist: neiwangExists && waiwangExists
+    };
+  } catch (error) {
+    console.error('检查适配器失败:', error.message);
+    return { neiwangExists: false, waiwangExists: false, bothExist: false };
+  }
+}
+
+// 重命名网络适配器
+async function renameAdapter(oldName, newName) {
+  try {
+    console.log(`正在重命名适配器: "${oldName}" -> "${newName}"`);
+    
+    // 使用 PowerShell 重命名适配器（使用单引号避免转义问题）
+    // 注意：需要处理适配器名称中可能包含的单引号
+    const escapedOldName = oldName.replace(/'/g, "''");
+    const escapedNewName = newName.replace(/'/g, "''");
+    
+    const psCommand = `Get-NetAdapter -Name '${escapedOldName}' -ErrorAction SilentlyContinue | Rename-NetAdapter -NewName '${escapedNewName}' -ErrorAction Stop; if ($?) { Write-Output 'success' } else { Write-Output 'failed' }`;
+    
+    const result = await execPromise(`powershell -NoProfile -ExecutionPolicy Bypass -Command "${psCommand}"`);
+    
+    if (result.stdout.includes('success')) {
+      console.log(`适配器重命名成功: "${oldName}" -> "${newName}"`);
+      return { success: true, message: `适配器已重命名为 "${newName}"` };
+    } else {
+      // 检查是否是找不到适配器
+      if (result.stderr.includes('No matching') || result.stderr.includes('找不到')) {
+        return { success: false, error: `未找到名为 "${oldName}" 的适配器` };
+      }
+      return { success: false, error: '重命名失败: ' + (result.stderr || result.stdout) };
+    }
+  } catch (error) {
+    console.error('重命名适配器失败:', error.message);
+    return { success: false, error: error.message };
+  }
+}
+
+// 配置网络适配器（重命名并保存配置）
+async function configureAdapters(neiwangAdapter, waiwangAdapter) {
+  try {
+    console.log('开始配置网络适配器...');
+    console.log('内网适配器:', neiwangAdapter);
+    console.log('外网适配器:', waiwangAdapter);
+    
+    // 验证输入
+    if (!neiwangAdapter || !waiwangAdapter) {
+      return { success: false, error: '请选择内网和外网适配器' };
+    }
+    
+    if (neiwangAdapter === waiwangAdapter) {
+      return { success: false, error: '内网和外网不能选择同一个适配器' };
+    }
+    
+    // 重命名内网适配器
+    const neiwangResult = await renameAdapter(neiwangAdapter, 'neiwang');
+    if (!neiwangResult.success) {
+      return { success: false, error: `内网适配器重命名失败: ${neiwangResult.error}` };
+    }
+    
+    // 重命名外网适配器
+    const waiwangResult = await renameAdapter(waiwangAdapter, 'waiwang');
+    if (!waiwangResult.success) {
+      // 如果外网重命名失败，尝试恢复内网名称
+      await renameAdapter('neiwang', neiwangAdapter);
+      return { success: false, error: `外网适配器重命名失败: ${waiwangResult.error}` };
+    }
+    
+    // 保存配置
+    saveAdapterConfig({
+      neiwang: 'neiwang',
+      waiwang: 'waiwang',
+      originalNeiwang: neiwangAdapter,
+      originalWaiwang: waiwangAdapter,
+      configuredAt: new Date().toISOString()
+    });
+    
+    return { success: true, message: '网络适配器配置成功！' };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+}
 
 // Windows 控制台默认使用 GBK 编码（代码页 936）
 // Node.js 输出会自动转换为 GBK，无需设置 chcp
@@ -197,7 +363,7 @@ function createWindow() {
       contextIsolation: true,
       preload: path.join(__dirname, 'preload.js')
     },
-    icon: path.join(__dirname, 'icon.ico')
+    icon: getIconPath()
   });
 
   // 完全禁用菜单栏和Alt键菜单
@@ -209,7 +375,7 @@ function createWindow() {
   // 强制设置任务栏图标（Windows）
   if (process.platform === 'win32') {
     mainWindow.once('ready-to-show', () => {
-      mainWindow.setIcon(path.join(__dirname, 'icon.ico'));
+      mainWindow.setIcon(getIconPath());
     });
   }
   
@@ -294,7 +460,7 @@ ipcMain.on('window-quit', () => {
 // 创建系统托盘
 function createTray() {
   // 创建托盘图标
-  const iconPath = path.join(__dirname, 'icon.ico');
+  const iconPath = getIconPath();
   const trayIcon = nativeImage.createFromPath(iconPath);
   
   tray = new Tray(trayIcon);
@@ -1292,6 +1458,46 @@ async function enableBothNetworks() {
 }
 
 // IPC 通信处理
+
+// 检查适配器是否已配置（检查实际适配器名称）
+ipcMain.handle('check-adapter-config', async () => {
+  try {
+    // 检查系统中是否实际存在 neiwang 和 waiwang 适配器
+    const adapterStatus = await checkActualAdapters();
+    const config = getAdapterConfig();
+    
+    return { 
+      success: true, 
+      configured: adapterStatus.bothExist,
+      neiwangExists: adapterStatus.neiwangExists,
+      waiwangExists: adapterStatus.waiwangExists,
+      config 
+    };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+});
+
+// 配置网络适配器
+ipcMain.handle('configure-adapters', async (event, neiwangAdapter, waiwangAdapter) => {
+  try {
+    const result = await configureAdapters(neiwangAdapter, waiwangAdapter);
+    return result;
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+});
+
+// 获取适配器配置
+ipcMain.handle('get-adapter-config', async () => {
+  try {
+    const config = getAdapterConfig();
+    return { success: true, config };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+});
+
 ipcMain.handle('get-interfaces', async () => {
   try {
     const interfaces = await getNetworkInterfaces();

@@ -16,6 +16,13 @@ let activationCodeInput;
 let activateButton;
 let activationMessage;
 
+// 适配器配置向导相关元素
+let adapterSetupScreen;
+let neiwangSelect;
+let waiwangSelect;
+let setupConfirmBtn;
+let setupMessage;
+
 // 执行最小化操作（先清除hover状态再最小化）
 function doMinimize() {
     // 在最小化前强制清除所有按钮的hover状态
@@ -323,7 +330,7 @@ async function handleRefreshClick() {
             // ping 不通，显示双网模式
             updateActionCards('both');
             if (currentModeText) currentModeText.textContent = '双网模式';
-            updateStatus('外网不通，切换双网模式', 'warning');
+            updateStatus('检测到双网模式', 'success');
         }
 
     } catch (error) {
@@ -725,12 +732,9 @@ async function activateApp() {
         
         if (result.success) {
             showActivationMessage('激活成功！正在启动应用...', 'success');
-            // 激活成功，切换到主应用界面并初始化
+            // 激活成功，切换到主应用界面（会自动检查适配器配置）
             setTimeout(() => {
                 showMainApp();
-                checkAdminPrivileges();
-                // 初始化网络状态（根据实际网络状态设置选中状态）
-                initNetworkState();
             }, 1000); // 延迟1秒让用户看到成功消息
         } else {
             showActivationMessage(result.error || '激活失败', 'error');
@@ -813,12 +817,9 @@ async function checkActivationAndInit() {
     try {
         const result = await window.networkAPI.checkActivationStatus();
         if (result.success && result.data.activated) {
-            // 已激活，初始化主应用
+            // 已激活，初始化主应用（会自动检查适配器配置）
             console.log('[前端] 应用已激活，显示主应用');
             showMainApp();
-            checkAdminPrivileges();
-            // 初始化网络状态（根据实际网络状态设置选中状态）
-            initNetworkState();
         } else {
             // 未激活，显示激活界面
             console.log('[前端] 应用未激活，显示激活界面');
@@ -872,9 +873,161 @@ function resetWindowButtonsHover() {
 }
 
 // 显示主应用
-function showMainApp() {
+async function showMainApp() {
     if (activationScreen && mainApp) {
         activationScreen.style.display = 'none';
+        
+        // 检查适配器是否已配置
+        try {
+            const configResult = await window.networkAPI.checkAdapterConfig();
+            console.log('[前端] 适配器配置状态:', configResult);
+            
+            if (configResult.success && !configResult.configured) {
+                // 未配置，显示配置向导
+                showAdapterSetup(configResult);
+                return;
+            }
+        } catch (error) {
+            console.error('[前端] 检查适配器配置失败:', error);
+        }
+        
+        // 已配置，显示主界面
+        displayMainApp();
+    }
+}
+
+// 显示适配器配置向导
+function showAdapterSetup(configResult) {
+    if (!adapterSetupScreen) {
+        adapterSetupScreen = document.getElementById('adapter-setup-screen');
+        neiwangSelect = document.getElementById('neiwang-select');
+        waiwangSelect = document.getElementById('waiwang-select');
+        setupConfirmBtn = document.getElementById('setup-confirm-btn');
+        setupMessage = document.getElementById('setup-message');
+    }
+    
+    if (adapterSetupScreen) {
+        adapterSetupScreen.style.display = 'flex';
+        console.log('[前端] 显示适配器配置向导');
+        
+        // 加载网络接口列表到下拉框
+        loadAdapterOptions();
+        
+        // 绑定确认按钮事件
+        if (setupConfirmBtn) {
+            setupConfirmBtn.onclick = handleAdapterSetup;
+        }
+        
+        // 绑定窗口控制按钮
+        const setupMinimize = adapterSetupScreen.querySelector('#btn-minimize');
+        const setupClose = adapterSetupScreen.querySelector('#btn-close');
+        
+        if (setupMinimize && window.windowControl) {
+            setupMinimize.onclick = (e) => {
+                e.stopPropagation();
+                doMinimize();
+            };
+        }
+        
+        if (setupClose && window.windowControl) {
+            setupClose.onclick = (e) => {
+                e.stopPropagation();
+                window.windowControl.close();
+            };
+        }
+    }
+}
+
+// 加载适配器选项
+async function loadAdapterOptions() {
+    try {
+        const result = await window.networkAPI.getInterfaces();
+        
+        if (result.success && neiwangSelect && waiwangSelect) {
+            const interfaces = result.data;
+            
+            // 清空现有选项
+            neiwangSelect.innerHTML = '<option value="">-- 请选择内网适配器 --</option>';
+            waiwangSelect.innerHTML = '<option value="">-- 请选择外网适配器 --</option>';
+            
+            // 添加适配器选项
+            interfaces.forEach(iface => {
+                const neiwangOption = document.createElement('option');
+                neiwangOption.value = iface.name;
+                neiwangOption.textContent = `${iface.name} (${iface.status === 'enabled' ? '已启用' : '已禁用'}, ${iface.state === 'connected' ? '已连接' : '未连接'})`;
+                neiwangSelect.appendChild(neiwangOption);
+                
+                const waiwangOption = document.createElement('option');
+                waiwangOption.value = iface.name;
+                waiwangOption.textContent = `${iface.name} (${iface.status === 'enabled' ? '已启用' : '已禁用'}, ${iface.state === 'connected' ? '已连接' : '未连接'})`;
+                waiwangSelect.appendChild(waiwangOption);
+            });
+        }
+    } catch (error) {
+        console.error('[前端] 加载适配器选项失败:', error);
+    }
+}
+
+// 处理适配器配置
+async function handleAdapterSetup() {
+    if (!neiwangSelect || !waiwangSelect || !setupConfirmBtn || !setupMessage) return;
+    
+    const neiwangAdapter = neiwangSelect.value;
+    const waiwangAdapter = waiwangSelect.value;
+    
+    // 验证
+    if (!neiwangAdapter || !waiwangAdapter) {
+        setupMessage.textContent = '请选择内网和外网适配器';
+        setupMessage.className = 'setup-message error';
+        setupMessage.style.display = 'block';
+        return;
+    }
+    
+    if (neiwangAdapter === waiwangAdapter) {
+        setupMessage.textContent = '内网和外网不能选择同一个适配器';
+        setupMessage.className = 'setup-message error';
+        setupMessage.style.display = 'block';
+        return;
+    }
+    
+    // 禁用按钮
+    setupConfirmBtn.disabled = true;
+    setupConfirmBtn.textContent = '配置中...';
+    setupMessage.textContent = '正在配置网络适配器...';
+    setupMessage.className = 'setup-message';
+    setupMessage.style.display = 'block';
+    
+    try {
+        const result = await window.networkAPI.configureAdapters(neiwangAdapter, waiwangAdapter);
+        
+        if (result.success) {
+            setupMessage.textContent = '配置成功！正在启动应用...';
+            setupMessage.className = 'setup-message success';
+            
+            // 延迟后显示主界面
+            setTimeout(() => {
+                if (adapterSetupScreen) {
+                    adapterSetupScreen.style.display = 'none';
+                }
+                displayMainApp();
+            }, 1500);
+        } else {
+            setupMessage.textContent = `配置失败: ${result.error}`;
+            setupMessage.className = 'setup-message error';
+            setupConfirmBtn.disabled = false;
+            setupConfirmBtn.textContent = '确认配置';
+        }
+    } catch (error) {
+        setupMessage.textContent = `配置失败: ${error.message}`;
+        setupMessage.className = 'setup-message error';
+        setupConfirmBtn.disabled = false;
+        setupConfirmBtn.textContent = '确认配置';
+    }
+}
+
+// 显示主应用界面
+function displayMainApp() {
+    if (mainApp) {
         mainApp.style.display = 'flex';
         console.log('[前端] 主应用已显示');
         
@@ -900,6 +1053,12 @@ function showMainApp() {
                 window.windowControl.close();
             };
         }
+        
+        // 检查管理员权限
+        checkAdminPrivileges();
+        
+        // 初始化网络状态
+        initNetworkState();
     }
 }
 // 加载网络接口列表

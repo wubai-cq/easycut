@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(claude --version)"
+      "Bash(claude --version)",
+      "WebSearch",
+      "mcp__plugin_everything-claude-code_memory__create_entities"
     ]
   }
 }

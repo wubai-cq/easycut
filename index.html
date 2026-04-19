@@ -59,6 +59,65 @@
             </div>
         </div>
 
+        <!-- 适配器配置向导 -->
+        <div id="adapter-setup-screen" class="adapter-setup-screen" style="display: none;">
+            <!-- 顶部导航栏 -->
+            <div class="header">
+                <div class="app-title">
+                    <img src="assets/icon.png" alt="EasyCut" class="title-logo" onerror="this.style.display='none'">
+                    <span>EasyCut</span>
+                </div>
+                <div class="header-actions">
+                    <button id="btn-minimize" class="window-btn minimize-btn" title="最小化">
+                        <svg viewBox="0 0 10 1" width="10" height="1"><rect width="10" height="1" fill="currentColor"/></svg>
+                    </button>
+                    <button id="btn-close" class="window-btn close-btn" title="关闭">
+                        <svg viewBox="0 0 10 10" width="10" height="10"><path d="M1,1 L9,9 M9,1 L1,9" stroke="currentColor" stroke-width="1.2" fill="none"/></svg>
+                    </button>
+                </div>
+            </div>
+            <!-- 配置向导内容 -->
+            <div class="setup-container">
+                <div class="setup-card">
+                    <div class="setup-header">
+                        <div class="setup-icon">🔌</div>
+                        <h1 class="setup-title">网络适配器配置</h1>
+                        <p class="setup-subtitle">首次使用需要配置网络适配器</p>
+                    </div>
+
+                    <div class="setup-form">
+                        <div class="setup-step">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <label class="step-label">选择内网适配器</label>
+                                <select id="neiwang-select" class="setup-select">
+                                    <option value="">-- 请选择内网适配器 --</option>
+                                </select>
+                                <p class="step-hint">内网：连接公司内部网络的网口（通常是网线）</p>
+                            </div>
+                        </div>
+
+                        <div class="setup-step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <label class="step-label">选择外网适配器</label>
+                                <select id="waiwang-select" class="setup-select">
+                                    <option value="">-- 请选择外网适配器 --</option>
+                                </select>
+                                <p class="step-hint">外网：连接互联网的网口（通常是 WiFi）</p>
+                            </div>
+                        </div>
+
+                        <button id="setup-confirm-btn" class="setup-button">
+                            确认配置
+                        </button>
+
+                        <div id="setup-message" class="setup-message" style="display: none;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- 主应用界面 -->
         <div id="main-app" style="display: none !important; width: 100%; height: 100%; flex-direction: column;">
             <!-- 顶部导航栏 -->
@@ -130,7 +189,6 @@
                         </div>
                         <div class="mode-check">✓</div>
                     </div>
-
 
                     <div class="mode-card active" id="card-both">
                         <div class="mode-icon">🌐</div>

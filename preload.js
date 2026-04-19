@@ -30,7 +30,12 @@ contextBridge.exposeInMainWorld('networkAPI', {
   checkActivationStatus: () => ipcRenderer.invoke('check-activation-status'),
   activateApp: (activationCode) => ipcRenderer.invoke('activate-app', activationCode),
   validateActivationCode: (code) => ipcRenderer.invoke('validate-activation-code', code),
-  resetActivation: () => ipcRenderer.invoke('reset-activation')
+  resetActivation: () => ipcRenderer.invoke('reset-activation'),
+  
+  // 适配器配置相关API
+  checkAdapterConfig: () => ipcRenderer.invoke('check-adapter-config'),
+  configureAdapters: (neiwangAdapter, waiwangAdapter) => ipcRenderer.invoke('configure-adapters', neiwangAdapter, waiwangAdapter),
+  getAdapterConfig: () => ipcRenderer.invoke('get-adapter-config')
 });
 
 // 窗口控制API - 暴露为独立对象
