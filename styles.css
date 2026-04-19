@@ -114,7 +114,6 @@ body {
 }
 
 .status-icon {
-    font-size: 28px;
     width: 48px;
     height: 48px;
     background: rgba(57, 230, 207, 0.1);
@@ -122,6 +121,11 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    color: #39e6cf;
+}
+
+.status-icon svg {
+    stroke: currentColor;
 }
 
 .status-title {
@@ -235,8 +239,24 @@ body {
 }
 
 .mode-icon {
-    font-size: 36px;
     flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #8a8d9e;
+    border-radius: 12px;
+    background: rgba(138, 141, 158, 0.1);
+}
+
+.mode-icon svg {
+    stroke: currentColor;
+}
+
+.mode-card.active .mode-icon {
+    color: #0E1122;
+    background: rgba(14, 17, 34, 0.15);
 }
 
 .mode-text {
@@ -446,6 +466,15 @@ body {
     width: 60px;
     height: 60px;
     background: linear-gradient(135deg, #39e6cf, #2ecc96);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #1a1f2e;
+}
+
+.logo-icon svg {
+    stroke: currentColor;
+}
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -494,9 +523,15 @@ body {
 }
 
 .input-icon {
-    font-size: 16px;
     margin-right: 10px;
     color: #8a8d9e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.input-icon svg {
+    stroke: currentColor;
 }
 
 .activation-input {
@@ -768,8 +803,19 @@ body {
 }
 
 .setup-icon {
-    font-size: 48px;
-    margin-bottom: 12px;
+    margin: 0 auto 12px;
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #39e6cf;
+    background: rgba(57, 230, 207, 0.1);
+    border-radius: 16px;
+}
+
+.setup-icon svg {
+    stroke: currentColor;
 }
 
 .setup-title {
